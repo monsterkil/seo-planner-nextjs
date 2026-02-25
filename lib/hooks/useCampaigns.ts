@@ -52,6 +52,7 @@ function createDefaultInput(): CampaignInput {
     weakBlogAnchors: [],
     internalLinks: [],
     blogIdeas: [],
+    publishedBlogs: [],
   };
 }
 
@@ -155,6 +156,7 @@ export function useCampaigns() {
     sitemapUrl: site.sitemapUrl,
     internalLinks: rawData.internalLinks ?? rawData.blogs?.map(() => []) ?? [],
     blogIdeas: rawData.blogIdeas ?? [],
+    publishedBlogs: rawData.publishedBlogs ?? [],
   };
 
   // --- Internal primitive ---
@@ -349,6 +351,7 @@ export function useCampaigns() {
             generateWeakBlogAnchors(companyName, companyUrl),
           ),
           internalLinks: aiInternalLinks,
+          publishedBlogs: [],
           blogIdeas: Array.isArray(raw.blogIdeas)
             ? raw.blogIdeas.map((b: { title?: string; keyword?: string; volume?: number }) => ({
                 title: b.title || '',

@@ -104,8 +104,7 @@ export function CampaignForm({
               value={campaign.moneyPageUrl}
               onChange={(e) => onUpdateField('moneyPageUrl', e.target.value)}
               onFocus={(e) => e.target.select()}
-              className={`${inputCls} text-ellipsis-none`}
-              style={{ textOverflow: 'clip' }}
+              className={inputCls}
             />
           </div>
 

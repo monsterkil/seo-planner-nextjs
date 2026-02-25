@@ -144,6 +144,16 @@ export default function CampaignDashboard() {
               <InternalLinksSection
                 blogs={campaign.blogs}
                 links={campaign.internalLinks}
+                publishedBlogs={campaign.publishedBlogs}
+                onTogglePublished={(blogId) => {
+                  const current = campaign.publishedBlogs;
+                  updateField(
+                    'publishedBlogs',
+                    current.includes(blogId)
+                      ? current.filter((id) => id !== blogId)
+                      : [...current, blogId],
+                  );
+                }}
               />
 
               <TimelineSection timeline={plan.timeline} />
