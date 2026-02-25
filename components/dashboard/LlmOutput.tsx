@@ -32,6 +32,10 @@ function buildText(campaign: CampaignInput, plan: CalculatedPlan): string {
   lines.push(`LINKI OGÓŁEM: ${d.totalLinks} (${campaign.strongPbnCount} mocnych + ${d.weakTotal} słabych)`);
   lines.push(`Czas: ${d.months} mies. | Koszt: ${d.monthlyPrice.toFixed(0)} zł/mies.`);
   lines.push('');
+  lines.push('TYPY PBN:');
+  lines.push('  Mocne PBN — linki ze strony głównej mocnych domen (wysoki DR/DA). Przekazują dużo mocy.');
+  lines.push('  Słabe PBN — linki ze stron wewnętrznych (artykułów) słabszych domen. Tańsze, budują naturalny profil.');
+  lines.push('');
 
   lines.push('PRZEPŁYW MOCY:');
   lines.push(`  Oferta: ${d.strongDirect} mocnych + ${d.weakDirect} słabych`);
