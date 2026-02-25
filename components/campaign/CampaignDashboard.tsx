@@ -38,6 +38,21 @@ export default function CampaignDashboard() {
   const [view, setView] = useState<'list' | 'detail'>('list');
   const plan = useCalculatedPlan(campaign);
 
+  const toggleAnchors = useCallback(
+    (ids: string[]) => {
+      const arr = Array.isArray(campaign.usedAnchors) ? campaign.usedAnchors : [];
+      const current = new Set(arr);
+      const allUsed = ids.every((id) => current.has(id));
+      if (allUsed) {
+        ids.forEach((id) => current.delete(id));
+      } else {
+        ids.forEach((id) => current.add(id));
+      }
+      updateField('usedAnchors', [...current]);
+    },
+    [campaign.usedAnchors, updateField],
+  );
+
   if (!hydrated) {
     return (
       <div className="min-h-screen bg-slate-950">
@@ -57,21 +72,6 @@ export default function CampaignDashboard() {
     addCampaign();
     setView('detail');
   };
-
-  const toggleAnchors = useCallback(
-    (ids: string[]) => {
-      const arr = Array.isArray(campaign.usedAnchors) ? campaign.usedAnchors : [];
-      const current = new Set(arr);
-      const allUsed = ids.every((id) => current.has(id));
-      if (allUsed) {
-        ids.forEach((id) => current.delete(id));
-      } else {
-        ids.forEach((id) => current.add(id));
-      }
-      updateField('usedAnchors', [...current]);
-    },
-    [campaign.usedAnchors, updateField],
-  );
 
   const hasData = campaign.mainKeyword.trim() !== '' && campaign.blogs.length > 0;
 
