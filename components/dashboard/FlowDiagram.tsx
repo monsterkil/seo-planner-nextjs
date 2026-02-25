@@ -94,14 +94,19 @@ export function FlowDiagram({
             <span className="inline-block rounded bg-violet-500/20 px-2 py-0.5 text-xs font-semibold text-violet-400">
               {blog.label}
             </span>
+            {blog.keyword && (
+              <div className="mt-1 truncate text-xs font-medium text-violet-400/80" title={blog.keyword}>
+                {blog.keyword}
+              </div>
+            )}
             {blog.volume > 0 && (
-              <div className="mt-1 text-xs text-slate-500">vol. {blog.volume}</div>
+              <div className="mt-0.5 text-xs text-slate-500">vol. {blog.volume}</div>
             )}
             <div
-              className="mt-1 line-clamp-2 text-xs font-medium leading-snug text-slate-300"
+              className="mt-1 line-clamp-2 text-xs leading-snug text-slate-400"
               title={blog.title}
             >
-              {blog.title || blog.keyword || '—'}
+              {blog.title || '—'}
             </div>
             <div className="mt-1 text-xs text-amber-500/70">2× link → oferta</div>
           </div>
