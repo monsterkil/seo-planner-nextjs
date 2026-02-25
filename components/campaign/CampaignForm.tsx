@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { CampaignInput, BlogArticle, LinkProfileKey } from '@/lib/types';
 import { LINK_PROFILES, MAX_BLOGS } from '@/lib/constants';
 import { BlogFieldGroup } from './BlogFieldGroup';
+import { PasteDataModal } from './PasteDataModal';
 
 const inputCls =
   'w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-amber-500 focus:outline-none';
@@ -16,6 +17,7 @@ export function CampaignForm({
   onUpdateBlog,
   onRegenerate,
   onReset,
+  onImport,
 }: {
   campaign: CampaignInput;
   onUpdateField: <K extends keyof CampaignInput>(key: K, value: CampaignInput[K]) => void;
@@ -24,8 +26,10 @@ export function CampaignForm({
   onUpdateBlog: (id: string, updates: Partial<BlogArticle>) => void;
   onRegenerate: () => void;
   onReset: () => void;
+  onImport: (json: string) => string | null;
 }) {
   const [expanded, setExpanded] = useState(true);
+  const [pasteOpen, setPasteOpen] = useState(false);
 
   const hasData = campaign.mainKeyword.trim() !== '';
 
@@ -193,6 +197,13 @@ export function CampaignForm({
           <div className="flex flex-wrap gap-3 border-t border-slate-800 pt-4">
             <button
               type="button"
+              onClick={() => setPasteOpen(true)}
+              className="rounded-lg bg-sky-500/20 px-4 py-2 text-sm font-medium text-sky-400 transition hover:bg-sky-500/30"
+            >
+              Wstaw dane
+            </button>
+            <button
+              type="button"
               onClick={onRegenerate}
               disabled={!hasData}
               className="rounded-lg bg-amber-500/20 px-4 py-2 text-sm font-medium text-amber-400 transition hover:bg-amber-500/30 disabled:opacity-40 disabled:hover:bg-amber-500/20"
@@ -209,6 +220,12 @@ export function CampaignForm({
           </div>
         </div>
       )}
+
+      <PasteDataModal
+        open={pasteOpen}
+        onClose={() => setPasteOpen(false)}
+        onImport={onImport}
+      />
     </section>
   );
 }

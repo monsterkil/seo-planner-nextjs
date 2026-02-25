@@ -20,6 +20,7 @@ export default function CampaignDashboard() {
     updateBlog,
     regenerateAnchors,
     resetCampaign,
+    importData,
   } = useCampaign();
 
   const plan = useCalculatedPlan(campaign);
@@ -47,6 +48,7 @@ export default function CampaignDashboard() {
           onUpdateBlog={updateBlog}
           onRegenerate={regenerateAnchors}
           onReset={resetCampaign}
+          onImport={importData}
         />
 
         {hasData ? (

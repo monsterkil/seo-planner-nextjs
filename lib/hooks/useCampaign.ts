@@ -125,6 +125,51 @@ export function useCampaign() {
     localStorage.removeItem(STORAGE_KEY);
   }, []);
 
+  /** Import campaign data from a JSON string (pasted from Claude). */
+  const importData = useCallback((json: string): string | null => {
+    try {
+      const raw = JSON.parse(json);
+
+      // Build blogs with proper IDs and labels
+      const blogs: BlogArticle[] = (raw.blogs || [])
+        .slice(0, 7)
+        .map((b: { title?: string; keyword?: string; volume?: number }, i: number) => ({
+          id: `blog-${Date.now()}-${i}`,
+          label: BLOG_LABELS[i],
+          title: b.title || '',
+          keyword: b.keyword || '',
+          volume: b.volume || 0,
+        }));
+
+      const mainKeyword = raw.mainKeyword || '';
+      const companyName = raw.companyName || '';
+      const companyUrl = raw.companyUrl || '';
+
+      const newCampaign: CampaignInput = {
+        mainKeyword,
+        volume: raw.volume || 0,
+        kd: raw.kd || 0,
+        moneyPageUrl: raw.moneyPageUrl || '',
+        companyName,
+        companyUrl,
+        blogs,
+        linkProfile: raw.linkProfile || 'balanced',
+        strongPbnCount: raw.strongPbnCount || 30,
+        // Auto-generate anchors from imported data
+        strongMoneyAnchors: generateStrongMoneyAnchors(mainKeyword),
+        weakMoneyAnchors: generateWeakMoneyAnchors(companyName, companyUrl),
+        strongBlogAnchors: blogs.map((b: BlogArticle) => generateStrongBlogAnchors(b)),
+        weakBlogAnchors: blogs.map(() => generateWeakBlogAnchors(companyName, companyUrl)),
+        internalLinks: blogs.map((b: BlogArticle) => generateInternalLinks(b, mainKeyword)),
+      };
+
+      setCampaign(newCampaign);
+      return null; // success
+    } catch (e) {
+      return e instanceof Error ? e.message : 'Nieprawidłowy format JSON';
+    }
+  }, []);
+
   return {
     campaign,
     hydrated,
@@ -134,5 +179,6 @@ export function useCampaign() {
     updateBlog,
     regenerateAnchors,
     resetCampaign,
+    importData,
   };
 }
