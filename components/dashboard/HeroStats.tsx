@@ -84,7 +84,7 @@ export function HeroStats({
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-transparent p-5 shadow-lg">
           <div className="text-2xl font-bold text-amber-400">
             {strongPbnCount}{' '}
