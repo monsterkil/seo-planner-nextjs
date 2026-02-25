@@ -41,7 +41,9 @@ function buildPromptTraffic(sitemapUrl: string): string {
     ? `\n\nWAŻNE: Artykuły blogowe NIE MOGĄ kanibalizować istniejących stron ofertowych. Sprawdź sitemap oferty: ${sitemapUrl.trim()} — jeśli fraza pasuje do już istniejącej strony ofertowej, NIE proponuj jej jako blog. Blogi mają być informacyjne/poradnikowe, nie ofertowe.\n`
     : '';
 
-  return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.${antiCannibal}
+  return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 30 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
+
+Wybierz 5-7 NAJLEPSZYCH fraz i umieść je w "blogs". Pozostałe (~23-25) umieść w "blogIdeas" jako zapas na przyszłość.${antiCannibal}
 ${ANCHOR_GUIDELINES}
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
@@ -59,6 +61,10 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
     {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa", "volume": 400},
     {"title": "...", "keyword": "...", "volume": 300}
   ],
+  "blogIdeas": [
+    {"title": "Tytuł zapasowy 1", "keyword": "fraza", "volume": 200},
+    {"title": "Tytuł zapasowy 2", "keyword": "fraza", "volume": 150}
+  ],
 ${ANCHOR_JSON_FORMAT},
   "internalLinks": [
     [
@@ -74,7 +80,9 @@ function buildPromptCluster(sitemapUrl: string): string {
     ? `\n\nWAŻNE: Artykuły blogowe NIE MOGĄ kanibalizować istniejących stron ofertowych. Sprawdź sitemap oferty: ${sitemapUrl.trim()} — jeśli fraza pasuje do już istniejącej strony ofertowej, NIE proponuj jej jako blog. Blogi mają budować topical authority, nie konkurować z ofertą.\n`
     : '';
 
-  return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz tematycznie powiązanych z money page, które budują topical authority wokół głównej frazy. To mogą być frazy o niskim lub zerowym ruchu — liczy się tematyczne wzmocnienie, nie traffic. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.${antiCannibal}
+  return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 30 fraz tematycznie powiązanych z money page, które budują topical authority wokół głównej frazy. To mogą być frazy o niskim lub zerowym ruchu — liczy się tematyczne wzmocnienie, nie traffic. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
+
+Wybierz 5-7 NAJLEPSZYCH fraz i umieść je w "blogs". Pozostałe (~23-25) umieść w "blogIdeas" jako zapas na przyszłość.${antiCannibal}
 ${ANCHOR_GUIDELINES}
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
@@ -91,6 +99,10 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
   "blogs": [
     {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa"},
     {"title": "...", "keyword": "..."}
+  ],
+  "blogIdeas": [
+    {"title": "Tytuł zapasowy 1", "keyword": "fraza"},
+    {"title": "Tytuł zapasowy 2", "keyword": "fraza"}
   ],
 ${ANCHOR_JSON_FORMAT},
   "internalLinks": [

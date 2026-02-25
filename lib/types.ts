@@ -21,6 +21,12 @@ export interface BlogArticle {
   volume: number;
 }
 
+export interface BlogIdea {
+  title: string;
+  keyword: string;
+  volume: number;
+}
+
 export type BlogMode = 'traffic' | 'cluster';
 export type LinkDistribution = 'proportional' | 'equal';
 
@@ -52,6 +58,7 @@ export interface CampaignInput {
   strongBlogAnchors: AnchorItem[][];
   weakBlogAnchors: AnchorItem[][];
   internalLinks: AnchorItem[][];
+  blogIdeas: BlogIdea[];
 }
 
 export interface PlanDistribution {

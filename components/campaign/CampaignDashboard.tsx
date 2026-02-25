@@ -11,6 +11,7 @@ import { OfferAnchorsSection } from '@/components/dashboard/OfferAnchorsSection'
 import { BlogAnchorsSection } from '@/components/dashboard/BlogAnchorsSection';
 import { InternalLinksSection } from '@/components/dashboard/InternalLinksSection';
 import { TimelineSection } from '@/components/dashboard/TimelineSection';
+import { BlogIdeasSection } from '@/components/dashboard/BlogIdeasSection';
 import { LlmOutput } from '@/components/dashboard/LlmOutput';
 
 export default function CampaignDashboard() {
@@ -142,6 +143,8 @@ export default function CampaignDashboard() {
               />
 
               <TimelineSection timeline={plan.timeline} />
+
+              <BlogIdeasSection ideas={campaign.blogIdeas} />
             </div>
 
             <LlmOutput campaign={campaign} plan={plan} />
