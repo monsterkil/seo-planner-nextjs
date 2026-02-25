@@ -34,8 +34,7 @@ export function FlowDiagram({
         {/* Money page direct */}
         <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/15 to-transparent p-3 text-center shadow-lg">
           <div className="text-2xl font-bold text-amber-400">{strongDirect}</div>
-          <div className="text-xs font-medium uppercase text-slate-500">Mocne</div>
-          <div className="mt-1 text-xs text-amber-400/80">→ oferta</div>
+          <div className="text-xs font-medium uppercase text-slate-500">MOCNE → oferta</div>
           <div className="mt-2 border-t border-slate-700/50 pt-2 text-xs text-slate-500">
             +<strong className="text-slate-400">{weakLabel(weakDirect)}</strong>
           </div>
@@ -51,7 +50,7 @@ export function FlowDiagram({
               {strongToBlogs[i] || 0}
             </div>
             <div className="text-xs font-medium uppercase text-slate-500">
-              → Blog {blog.label}
+              MOCNY → Blog {blog.label}
             </div>
             <div className="mt-2 border-t border-slate-700/50 pt-2 text-xs text-slate-500">
               +<strong className="text-slate-400">{weakLabel(weakToBlogs[i] || 0)}</strong>
