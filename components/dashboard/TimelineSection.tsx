@@ -11,7 +11,7 @@ export function TimelineSection({ timeline }: { timeline: TimelineRow[] }) {
       <Accordion
         count={timeline.length}
         countColor="bg-sky-500/20 text-sky-400"
-        title="Timeline — miesiące"
+        title="Timeline"
       >
         <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] gap-px overflow-hidden rounded-xl border border-slate-800 bg-slate-800">
           <div className="bg-slate-800/80 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
