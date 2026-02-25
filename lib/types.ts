@@ -22,6 +22,7 @@ export interface BlogArticle {
 }
 
 export type BlogMode = 'traffic' | 'cluster';
+export type LinkDistribution = 'proportional' | 'equal';
 
 export type LinkProfileKey = 'aggressive' | 'balanced' | 'safe';
 
@@ -41,6 +42,7 @@ export interface CampaignInput {
   companyName: string;
   companyUrl: string;
   blogMode: BlogMode;
+  linkDistribution: LinkDistribution;
   blogs: BlogArticle[];
   linkProfile: LinkProfileKey;
   strongPbnCount: number;

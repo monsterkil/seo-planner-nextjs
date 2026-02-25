@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { CampaignInput, BlogArticle, LinkProfileKey, BlogMode } from '@/lib/types';
+import type { CampaignInput, BlogArticle, LinkProfileKey, BlogMode, LinkDistribution } from '@/lib/types';
 import { LINK_PROFILES, MAX_BLOGS } from '@/lib/constants';
 import { BlogFieldGroup } from './BlogFieldGroup';
 import { PasteDataModal } from './PasteDataModal';
@@ -181,6 +181,36 @@ export function CampaignForm({
                         ? mode.key === 'traffic'
                           ? 'bg-sky-500/30 text-sky-400 ring-1 ring-sky-500/50'
                           : 'bg-purple-500/30 text-purple-400 ring-1 ring-purple-500/50'
+                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                    }`}
+                  >
+                    <div>{mode.label}</div>
+                    <div className="mt-0.5 text-xs opacity-70">{mode.desc}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Link distribution */}
+          <div>
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Podział linków na blogi
+            </label>
+            <div className="flex gap-2">
+              {([
+                { key: 'proportional' as LinkDistribution, label: 'Wg volume', desc: 'więcej linków na blogi z ruchem' },
+                { key: 'equal' as LinkDistribution, label: 'Równy', desc: 'tyle samo linków na każdy blog' },
+              ]).map((mode) => {
+                const active = campaign.linkDistribution === mode.key;
+                return (
+                  <button
+                    key={mode.key}
+                    type="button"
+                    onClick={() => onUpdateField('linkDistribution', mode.key)}
+                    className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                      active
+                        ? 'bg-teal-500/30 text-teal-400 ring-1 ring-teal-500/50'
                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                     }`}
                   >

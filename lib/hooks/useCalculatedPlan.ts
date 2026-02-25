@@ -6,10 +6,16 @@ import { buildPlan } from '../engine';
 export function useCalculatedPlan(campaign: CampaignInput): CalculatedPlan {
   return useMemo(() => {
     const profile = LINK_PROFILES[campaign.linkProfile] || LINK_PROFILES.balanced;
+
+    // In equal distribution mode, zero out volumes so engine splits equally
+    const blogs = campaign.linkDistribution === 'equal'
+      ? campaign.blogs.map((b) => ({ ...b, volume: 0 }))
+      : campaign.blogs;
+
     return buildPlan(
       campaign.strongPbnCount,
       profile,
-      campaign.blogs,
+      blogs,
       campaign.strongMoneyAnchors,
       campaign.weakMoneyAnchors,
       campaign.strongBlogAnchors,
@@ -18,6 +24,7 @@ export function useCalculatedPlan(campaign: CampaignInput): CalculatedPlan {
   }, [
     campaign.strongPbnCount,
     campaign.linkProfile,
+    campaign.linkDistribution,
     campaign.blogs,
     campaign.strongMoneyAnchors,
     campaign.weakMoneyAnchors,
