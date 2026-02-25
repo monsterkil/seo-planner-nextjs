@@ -43,7 +43,7 @@ function buildPromptTraffic(sitemapUrl: string): string {
 
   return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 30 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
 
-Wybierz 5-7 NAJLEPSZYCH fraz i umieść je w "blogs". Pozostałe (~23-25) umieść w "blogIdeas" jako zapas na przyszłość.${antiCannibal}
+Wybierz 5-7 NAJLEPSZYCH fraz i umieść je w "blogs". Pozostałe (~23-25) umieść w "blogIdeas" jako zapas na przyszłość. Każdy temat w blogIdeas musi mieć taką samą jakość jak główne blogi — pełny tytuł SEO, sprawdzoną frazę docelową z Ahrefs i volume.${antiCannibal}
 ${ANCHOR_GUIDELINES}
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
@@ -62,8 +62,8 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
     {"title": "...", "keyword": "...", "volume": 300}
   ],
   "blogIdeas": [
-    {"title": "Tytuł zapasowy 1", "keyword": "fraza", "volume": 200},
-    {"title": "Tytuł zapasowy 2", "keyword": "fraza", "volume": 150}
+    {"title": "Pełny tytuł artykułu SEO", "keyword": "sprawdzona fraza z Ahrefs", "volume": 200},
+    {"title": "Pełny tytuł artykułu SEO 2", "keyword": "sprawdzona fraza z Ahrefs", "volume": 150}
   ],
 ${ANCHOR_JSON_FORMAT},
   "internalLinks": [
@@ -82,7 +82,7 @@ function buildPromptCluster(sitemapUrl: string): string {
 
   return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 30 fraz tematycznie powiązanych z money page, które budują topical authority wokół głównej frazy. To mogą być frazy o niskim lub zerowym ruchu — liczy się tematyczne wzmocnienie, nie traffic. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
 
-Wybierz 5-7 NAJLEPSZYCH fraz i umieść je w "blogs". Pozostałe (~23-25) umieść w "blogIdeas" jako zapas na przyszłość.${antiCannibal}
+Wybierz 5-7 NAJLEPSZYCH fraz i umieść je w "blogs". Pozostałe (~23-25) umieść w "blogIdeas" jako zapas na przyszłość. Każdy temat w blogIdeas musi mieć taką samą jakość jak główne blogi — pełny tytuł SEO i sprawdzoną frazę docelową z Ahrefs.${antiCannibal}
 ${ANCHOR_GUIDELINES}
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
@@ -101,8 +101,8 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
     {"title": "...", "keyword": "..."}
   ],
   "blogIdeas": [
-    {"title": "Tytuł zapasowy 1", "keyword": "fraza"},
-    {"title": "Tytuł zapasowy 2", "keyword": "fraza"}
+    {"title": "Pełny tytuł artykułu SEO", "keyword": "sprawdzona fraza z Ahrefs"},
+    {"title": "Pełny tytuł artykułu SEO 2", "keyword": "sprawdzona fraza z Ahrefs"}
   ],
 ${ANCHOR_JSON_FORMAT},
   "internalLinks": [
