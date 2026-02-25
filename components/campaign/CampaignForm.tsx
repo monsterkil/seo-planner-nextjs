@@ -215,8 +215,8 @@ export function CampaignForm({
             </label>
             <div className="flex gap-2">
               {([
-                { key: 'proportional' as LinkDistribution, label: 'Wg volume', desc: 'więcej linków na blogi z ruchem' },
                 { key: 'equal' as LinkDistribution, label: 'Równy', desc: 'tyle samo linków na każdy blog' },
+                { key: 'proportional' as LinkDistribution, label: 'Wg volume', desc: 'więcej linków na blogi z ruchem' },
               ]).map((mode) => {
                 const active = campaign.linkDistribution === mode.key;
                 return (

@@ -34,7 +34,7 @@ function createDefaultInput(): CampaignInput {
     companyUrl: '',
     sitemapUrl: '',
     blogMode: 'cluster',
-    linkDistribution: 'proportional',
+    linkDistribution: 'equal',
     blogs: [],
     linkProfile: 'balanced',
     strongPbnCount: 30,
