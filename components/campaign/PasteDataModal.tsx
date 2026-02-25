@@ -3,7 +3,12 @@
 import { useState } from 'react';
 import type { BlogMode } from '@/lib/types';
 
-const PROMPT_TRAFFIC = `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
+function buildPromptTraffic(sitemapUrl: string): string {
+  const antiCannibal = sitemapUrl.trim()
+    ? `\n\nWAŻNE: Artykuły blogowe NIE MOGĄ kanibalizować istniejących stron ofertowych. Sprawdź sitemap oferty: ${sitemapUrl.trim()} — jeśli fraza pasuje do już istniejącej strony ofertowej, NIE proponuj jej jako blog. Blogi mają być informacyjne/poradnikowe, nie ofertowe.\n`
+    : '';
+
+  return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.${antiCannibal}
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
 {
@@ -21,8 +26,14 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
     {"title": "...", "keyword": "...", "volume": 300}
   ]
 }`;
+}
 
-const PROMPT_CLUSTER = `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz tematycznie powiązanych z money page, które budują topical authority wokół głównej frazy. To mogą być frazy o niskim lub zerowym ruchu — liczy się tematyczne wzmocnienie, nie traffic. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
+function buildPromptCluster(sitemapUrl: string): string {
+  const antiCannibal = sitemapUrl.trim()
+    ? `\n\nWAŻNE: Artykuły blogowe NIE MOGĄ kanibalizować istniejących stron ofertowych. Sprawdź sitemap oferty: ${sitemapUrl.trim()} — jeśli fraza pasuje do już istniejącej strony ofertowej, NIE proponuj jej jako blog. Blogi mają budować topical authority, nie konkurować z ofertą.\n`
+    : '';
+
+  return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz tematycznie powiązanych z money page, które budują topical authority wokół głównej frazy. To mogą być frazy o niskim lub zerowym ruchu — liczy się tematyczne wzmocnienie, nie traffic. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.${antiCannibal}
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
 {
@@ -40,6 +51,7 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
     {"title": "...", "keyword": "..."}
   ]
 }`;
+}
 
 const EXAMPLE_TRAFFIC = `{
   "mainKeyword": "oklejanie witryn Warszawa",
@@ -93,12 +105,14 @@ export function PasteDataModal({
   onImport,
   blogMode,
   mainKeyword,
+  sitemapUrl,
 }: {
   open: boolean;
   onClose: () => void;
   onImport: (json: string) => string | null;
   blogMode: BlogMode;
   mainKeyword: string;
+  sitemapUrl: string;
 }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -107,7 +121,7 @@ export function PasteDataModal({
 
   if (!open) return null;
 
-  const rawPrompt = blogMode === 'cluster' ? PROMPT_CLUSTER : PROMPT_TRAFFIC;
+  const rawPrompt = blogMode === 'cluster' ? buildPromptCluster(sitemapUrl) : buildPromptTraffic(sitemapUrl);
   const promptTemplate = mainKeyword.trim()
     ? rawPrompt.replace('[WPISZ TEMAT]', mainKeyword.trim())
     : rawPrompt;

@@ -109,6 +109,22 @@ export function CampaignForm({
             />
           </div>
 
+          {/* Sitemap URL */}
+          <div>
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Sitemap oferty (do anti-kanibalizacji w prompcie)
+            </label>
+            <input
+              type="text"
+              placeholder="np. https://folplex.pl/ct_offer-sitemap.xml"
+              value={campaign.sitemapUrl}
+              onChange={(e) => onUpdateField('sitemapUrl', e.target.value)}
+              onFocus={(e) => e.target.select()}
+              className={inputCls}
+              style={{ textOverflow: 'clip' }}
+            />
+          </div>
+
           {/* Company info */}
           <div>
             <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -290,6 +306,7 @@ export function CampaignForm({
         onImport={onImport}
         blogMode={campaign.blogMode}
         mainKeyword={campaign.mainKeyword}
+        sitemapUrl={campaign.sitemapUrl}
       />
     </section>
   );

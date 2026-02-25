@@ -41,6 +41,7 @@ export interface CampaignInput {
   moneyPageUrl: string;
   companyName: string;
   companyUrl: string;
+  sitemapUrl: string;
   blogMode: BlogMode;
   linkDistribution: LinkDistribution;
   blogs: BlogArticle[];

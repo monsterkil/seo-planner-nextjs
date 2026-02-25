@@ -32,6 +32,7 @@ function createDefaultInput(): CampaignInput {
     moneyPageUrl: '',
     companyName: '',
     companyUrl: '',
+    sitemapUrl: '',
     blogMode: 'cluster',
     linkDistribution: 'proportional',
     blogs: [],
@@ -268,6 +269,7 @@ export function useCampaigns() {
           moneyPageUrl: raw.moneyPageUrl || '',
           companyName,
           companyUrl,
+          sitemapUrl: raw.sitemapUrl || '',
           blogMode,
           linkDistribution:
             raw.linkDistribution === 'equal'
