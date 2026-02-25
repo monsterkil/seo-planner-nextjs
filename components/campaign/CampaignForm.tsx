@@ -103,7 +103,9 @@ export function CampaignForm({
               placeholder="np. /oferta/oklejanie-witryn/"
               value={campaign.moneyPageUrl}
               onChange={(e) => onUpdateField('moneyPageUrl', e.target.value)}
-              className={inputCls}
+              onFocus={(e) => e.target.select()}
+              className={`${inputCls} text-ellipsis-none`}
+              style={{ textOverflow: 'clip' }}
             />
           </div>
 
