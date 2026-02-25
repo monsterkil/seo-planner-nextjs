@@ -112,7 +112,12 @@ export function useCampaigns() {
 
   // --- Derived ---
   const activeCampaign = store.campaigns.find((c) => c.id === store.activeCampaignId);
-  const campaign: CampaignInput = activeCampaign?.data ?? createDefaultInput();
+  const rawData = activeCampaign?.data ?? createDefaultInput();
+  // Ensure internalLinks exists (may be missing from older localStorage data)
+  const campaign: CampaignInput = {
+    ...rawData,
+    internalLinks: rawData.internalLinks ?? rawData.blogs?.map(() => []) ?? [],
+  };
 
   // --- Internal primitive ---
   const updateActiveCampaign = useCallback(
