@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useCampaigns } from '@/lib/hooks/useCampaigns';
 import { useCalculatedPlan } from '@/lib/hooks/useCalculatedPlan';
 import { CampaignSelector } from './CampaignSelector';
@@ -29,6 +30,7 @@ export default function CampaignDashboard() {
     importData,
   } = useCampaigns();
 
+  const [view, setView] = useState<'list' | 'detail'>('list');
   const plan = useCalculatedPlan(campaign);
 
   if (!hydrated) {
@@ -41,20 +43,51 @@ export default function CampaignDashboard() {
     );
   }
 
+  const handleSelect = (id: string) => {
+    switchCampaign(id);
+    setView('detail');
+  };
+
+  const handleAdd = () => {
+    addCampaign();
+    setView('detail');
+  };
+
   const hasData = campaign.mainKeyword.trim() !== '' && campaign.blogs.length > 0;
 
+  // --- List view ---
+  if (view === 'list') {
+    return (
+      <div className="min-h-screen bg-slate-950">
+        <main className="px-6 py-8">
+          <CampaignSelector
+            campaigns={campaigns}
+            onSelect={handleSelect}
+            onAdd={handleAdd}
+            onDelete={deleteCampaign}
+          />
+        </main>
+      </div>
+    );
+  }
+
+  // --- Detail view ---
   return (
     <div className="min-h-screen bg-slate-950">
       <main className="mx-auto max-w-[1600px] px-6 py-8">
-        {/* Constrained header: selector + form */}
+        {/* Back button */}
+        <div className="mx-auto mb-4 max-w-4xl">
+          <button
+            type="button"
+            onClick={() => setView('list')}
+            className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-800 hover:text-slate-300"
+          >
+            ← Kampanie
+          </button>
+        </div>
+
+        {/* Form */}
         <div className="mx-auto max-w-4xl">
-          <CampaignSelector
-            campaigns={campaigns}
-            activeCampaignId={activeCampaignId}
-            onSwitch={switchCampaign}
-            onAdd={addCampaign}
-            onDelete={deleteCampaign}
-          />
           <CampaignForm
             campaign={campaign}
             onUpdateField={updateField}
