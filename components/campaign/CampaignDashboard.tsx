@@ -1,7 +1,8 @@
 'use client';
 
-import { useCampaign } from '@/lib/hooks/useCampaign';
+import { useCampaigns } from '@/lib/hooks/useCampaigns';
 import { useCalculatedPlan } from '@/lib/hooks/useCalculatedPlan';
+import { CampaignSelector } from './CampaignSelector';
 import { CampaignForm } from './CampaignForm';
 import { HeroStats } from '@/components/dashboard/HeroStats';
 import { FlowDiagram } from '@/components/dashboard/FlowDiagram';
@@ -12,6 +13,11 @@ import { TimelineSection } from '@/components/dashboard/TimelineSection';
 
 export default function CampaignDashboard() {
   const {
+    campaigns,
+    activeCampaignId,
+    addCampaign,
+    deleteCampaign,
+    switchCampaign,
     campaign,
     hydrated,
     updateField,
@@ -21,7 +27,7 @@ export default function CampaignDashboard() {
     regenerateAnchors,
     resetCampaign,
     importData,
-  } = useCampaign();
+  } = useCampaigns();
 
   const plan = useCalculatedPlan(campaign);
 
@@ -40,16 +46,26 @@ export default function CampaignDashboard() {
   return (
     <div className="min-h-screen bg-slate-950">
       <main className="mx-auto max-w-[1600px] px-6 py-8">
-        <CampaignForm
-          campaign={campaign}
-          onUpdateField={updateField}
-          onAddBlog={addBlog}
-          onRemoveBlog={removeBlog}
-          onUpdateBlog={updateBlog}
-          onRegenerate={regenerateAnchors}
-          onReset={resetCampaign}
-          onImport={importData}
-        />
+        {/* Constrained header: selector + form */}
+        <div className="mx-auto max-w-4xl">
+          <CampaignSelector
+            campaigns={campaigns}
+            activeCampaignId={activeCampaignId}
+            onSwitch={switchCampaign}
+            onAdd={addCampaign}
+            onDelete={deleteCampaign}
+          />
+          <CampaignForm
+            campaign={campaign}
+            onUpdateField={updateField}
+            onAddBlog={addBlog}
+            onRemoveBlog={removeBlog}
+            onUpdateBlog={updateBlog}
+            onRegenerate={regenerateAnchors}
+            onReset={resetCampaign}
+            onImport={importData}
+          />
+        </div>
 
         {hasData ? (
           <>
@@ -72,7 +88,7 @@ export default function CampaignDashboard() {
               mainKeyword={campaign.mainKeyword}
             />
 
-            <div className="space-y-8">
+            <div className="mx-auto max-w-5xl space-y-8">
               <OfferAnchorsSection
                 strongSlice={plan.strongMoneySlice}
                 weakSlice={plan.weakMoneySlice}
@@ -94,7 +110,7 @@ export default function CampaignDashboard() {
               <TimelineSection timeline={plan.timeline} />
             </div>
 
-            <footer className="mt-16 border-t border-slate-800 pt-8">
+            <footer className="mx-auto mt-16 max-w-5xl border-t border-slate-800 pt-8">
               <p className="text-xs leading-relaxed text-slate-500">
                 Docelowy profil oferty: ~10% exact · ~20% partial · ~45% brand/URL ·
                 ~25% generic. Mocne PBN = exact + partial · Słabe PBN = brand +
@@ -103,7 +119,7 @@ export default function CampaignDashboard() {
             </footer>
           </>
         ) : (
-          <div className="rounded-2xl border border-dashed border-slate-700 p-12 text-center">
+          <div className="mx-auto max-w-4xl rounded-2xl border border-dashed border-slate-700 p-12 text-center">
             <p className="text-lg text-slate-500">
               Wpisz frazę główną i dodaj co najmniej 1 blog, żeby zobaczyć plan kampanii.
             </p>

@@ -80,3 +80,16 @@ export interface CalculatedPlan {
   strongBlogSlices: AnchorItem[][];
   weakBlogSlices: AnchorItem[][];
 }
+
+export interface CampaignRecord {
+  id: string;
+  name: string;
+  createdAt: number;
+  data: CampaignInput;
+}
+
+export interface CampaignsStore {
+  version: 1;
+  campaigns: CampaignRecord[];
+  activeCampaignId: string | null;
+}

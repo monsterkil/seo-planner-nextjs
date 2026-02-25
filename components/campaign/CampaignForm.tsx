@@ -137,23 +137,21 @@ export function CampaignForm({
             </label>
             <div className="flex flex-wrap gap-2">
               {(Object.keys(LINK_PROFILES) as LinkProfileKey[]).map((key) => {
-                const p = LINK_PROFILES[key];
                 const active = campaign.linkProfile === key;
+                const p = LINK_PROFILES[key];
                 return (
                   <button
                     key={key}
                     type="button"
                     onClick={() => onUpdateField('linkProfile', key)}
-                    className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                    title={`${Math.round(p.directPercent * 100)}% direct · ${Math.round(p.blogsPercent * 100)}% blogi · słabe ${p.weakRatio}x`}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                       active
                         ? 'bg-emerald-500/30 text-emerald-400 ring-1 ring-emerald-500/50'
                         : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                     }`}
                   >
-                    <div>{p.label}</div>
-                    <div className="mt-0.5 text-xs opacity-70">
-                      {Math.round(p.directPercent * 100)}% direct · {Math.round(p.blogsPercent * 100)}% blogi · słabe {p.weakRatio}x
-                    </div>
+                    {p.label}
                   </button>
                 );
               })}
@@ -167,8 +165,8 @@ export function CampaignForm({
             </label>
             <div className="flex gap-2">
               {([
-                { key: 'traffic' as BlogMode, label: 'Traffic', desc: 'frazy z ruchem (informacyjne)' },
                 { key: 'cluster' as BlogMode, label: 'Cluster', desc: 'topical authority (bez ruchu)' },
+                { key: 'traffic' as BlogMode, label: 'Traffic', desc: 'frazy z ruchem (informacyjne)' },
               ]).map((mode) => {
                 const active = campaign.blogMode === mode.key;
                 return (
