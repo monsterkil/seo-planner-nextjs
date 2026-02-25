@@ -1,15 +1,91 @@
+'use client';
+
+import { useState } from 'react';
 import type { CampaignRecord } from '@/lib/types';
+
+function StatusBadge({
+  status,
+  onSave,
+}: {
+  status?: string;
+  onSave: (value: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(status || '');
+
+  if (editing) {
+    return (
+      <input
+        autoFocus
+        type="text"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={() => {
+          onSave(draft);
+          setEditing(false);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onSave(draft);
+            setEditing(false);
+          }
+          if (e.key === 'Escape') {
+            setDraft(status || '');
+            setEditing(false);
+          }
+        }}
+        onClick={(e) => e.stopPropagation()}
+        placeholder="np. Priorytet!"
+        className="w-28 rounded border border-amber-500/50 bg-slate-950 px-2 py-0.5 text-xs text-amber-300 placeholder:text-slate-600 focus:outline-none"
+      />
+    );
+  }
+
+  if (status) {
+    return (
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setDraft(status);
+          setEditing(true);
+        }}
+        className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-medium text-amber-400 transition hover:bg-amber-500/25"
+        title="Kliknij żeby edytować status"
+      >
+        {status}
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        setDraft('');
+        setEditing(true);
+      }}
+      className="rounded-full border border-dashed border-slate-700 px-2.5 py-0.5 text-xs text-slate-600 opacity-0 transition group-hover:opacity-100 hover:border-slate-500 hover:text-slate-400"
+      title="Dodaj status"
+    >
+      + status
+    </button>
+  );
+}
 
 export function CampaignSelector({
   campaigns,
   onSelect,
   onAdd,
   onDelete,
+  onUpdateStatus,
 }: {
   campaigns: CampaignRecord[];
   onSelect: (id: string) => void;
   onAdd: () => void;
   onDelete: (id: string) => void;
+  onUpdateStatus: (id: string, status: string) => void;
 }) {
   return (
     <div className="mx-auto max-w-3xl">
@@ -44,8 +120,14 @@ export function CampaignSelector({
                   {keyword.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-white">
-                    {keyword}
+                  <div className="flex items-center gap-2">
+                    <span className="truncate text-sm font-medium text-white">
+                      {keyword}
+                    </span>
+                    <StatusBadge
+                      status={c.status}
+                      onSave={(v) => onUpdateStatus(c.id, v)}
+                    />
                   </div>
                   <div className="mt-0.5 text-xs text-slate-500">
                     {hasData

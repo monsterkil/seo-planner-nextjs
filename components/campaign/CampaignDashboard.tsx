@@ -22,6 +22,7 @@ export default function CampaignDashboard() {
     addCampaign,
     deleteCampaign,
     switchCampaign,
+    updateCampaignStatus,
     site,
     updateSite,
     campaign,
@@ -86,6 +87,7 @@ export default function CampaignDashboard() {
             onSelect={handleSelect}
             onAdd={handleAdd}
             onDelete={deleteCampaign}
+            onUpdateStatus={updateCampaignStatus}
           />
         </main>
       </div>

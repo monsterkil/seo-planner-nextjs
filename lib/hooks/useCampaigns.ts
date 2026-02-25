@@ -204,6 +204,15 @@ export function useCampaigns() {
     setStore((s) => ({ ...s, activeCampaignId: id }));
   }, []);
 
+  const updateCampaignStatus = useCallback((id: string, status: string) => {
+    setStore((s) => ({
+      ...s,
+      campaigns: s.campaigns.map((c) =>
+        c.id === id ? { ...c, status: status.trim() || undefined } : c,
+      ),
+    }));
+  }, []);
+
   // --- Single-campaign mutators ---
   const updateField = useCallback(
     <K extends keyof CampaignInput>(key: K, value: CampaignInput[K]) => {
@@ -380,6 +389,7 @@ export function useCampaigns() {
     addCampaign,
     deleteCampaign,
     switchCampaign,
+    updateCampaignStatus,
     // Site settings
     site,
     updateSite,

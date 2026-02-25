@@ -96,6 +96,7 @@ export interface CampaignRecord {
   name: string;
   createdAt: number;
   data: CampaignInput;
+  status?: string;
 }
 
 export interface SiteSettings {
