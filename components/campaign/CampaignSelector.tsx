@@ -15,31 +15,38 @@ function StatusBadge({
 
   if (editing) {
     return (
-      <input
-        autoFocus
-        type="text"
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={() => {
-          onSave(draft);
-          setEditing(false);
-        }}
-        onKeyDown={(e) => {
-          e.stopPropagation();
-          if (e.key === 'Enter') {
+      // Wrapper span stops ALL events from reaching parent <button> and draggable div
+      <span
+        role="presentation"
+        draggable={false}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        onKeyUp={(e) => e.stopPropagation()}
+      >
+        <input
+          autoFocus
+          type="text"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={() => {
             onSave(draft);
             setEditing(false);
-          }
-          if (e.key === 'Escape') {
-            setDraft(status || '');
-            setEditing(false);
-          }
-        }}
-        onKeyUp={(e) => e.stopPropagation()}
-        onClick={(e) => e.stopPropagation()}
-        placeholder="np. Priorytet!"
-        className="w-28 rounded border border-amber-500/50 bg-slate-950 px-2 py-0.5 text-xs text-amber-300 placeholder:text-slate-600 focus:outline-none"
-      />
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onSave(draft);
+              setEditing(false);
+            }
+            if (e.key === 'Escape') {
+              setDraft(status || '');
+              setEditing(false);
+            }
+          }}
+          placeholder="np. Priorytet!"
+          className="w-28 rounded border border-amber-500/50 bg-slate-950 px-2 py-0.5 text-xs text-amber-300 placeholder:text-slate-600 focus:outline-none"
+        />
+      </span>
     );
   }
 
@@ -52,6 +59,7 @@ function StatusBadge({
           setDraft(status);
           setEditing(true);
         }}
+        onMouseDown={(e) => e.stopPropagation()}
         className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-medium text-amber-400 transition hover:bg-amber-500/25"
         title="Kliknij żeby edytować status"
       >
@@ -68,6 +76,7 @@ function StatusBadge({
         setDraft('');
         setEditing(true);
       }}
+      onMouseDown={(e) => e.stopPropagation()}
       className="rounded-full border border-dashed border-slate-700 px-2.5 py-0.5 text-xs text-slate-600 opacity-0 transition group-hover:opacity-100 hover:border-slate-500 hover:text-slate-400"
       title="Dodaj status"
     >
@@ -175,6 +184,10 @@ export function CampaignSelector({
                     <span className="truncate text-sm font-medium text-white">
                       {keyword}
                     </span>
+                    <StatusBadge
+                      status={c.status}
+                      onSave={(v) => onUpdateStatus(c.id, v)}
+                    />
                   </div>
                   <div className="mt-0.5 text-xs text-slate-500">
                     {hasData
@@ -186,11 +199,6 @@ export function CampaignSelector({
                   →
                 </span>
               </button>
-
-              <StatusBadge
-                status={c.status}
-                onSave={(v) => onUpdateStatus(c.id, v)}
-              />
 
               {campaigns.length > 1 && (
                 <button
