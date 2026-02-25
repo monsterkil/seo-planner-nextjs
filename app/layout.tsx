@@ -1,15 +1,28 @@
 import type { Metadata } from 'next';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
+const inter = Inter({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-jetbrains',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: 'Plan PBN — litery ze styroduru (v2)',
-  description: 'SEO Planner - plan budowy sieci PBN dla fraz związanych z literami ze styroduru',
+  title: 'SEO Planner — Plan PBN',
+  description: 'Plan budowy sieci PBN dla fraz związanych z literami ze styroduru',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pl">
-      <body>{children}</body>
+    <html lang="pl" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="min-h-screen font-sans">{children}</body>
     </html>
   );
 }
