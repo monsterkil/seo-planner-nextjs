@@ -10,6 +10,7 @@ Wygeneruj też anchory (teksty linków) do kampanii PBN. Typy anchorów:
 - brand: nazwa firmy lub URL w różnych odmianach (np. "Folplex", "folplex.pl") — 10× dla oferty, 6× per blog
 - generic: ogólne CTA (np. "sprawdź ofertę", "tutaj", "więcej informacji") — 10× dla oferty, 6× per blog
 Każdy anchor unikalny i naturalnie brzmiący. Exact mogą się powtarzać.
+WAŻNE: Anchory brand i generic dla KAŻDEGO bloga muszą być RÓŻNE — NIE kopiuj tego samego zestawu "na blogu Firma / czytaj więcej / tutaj" do każdego bloga. Wymyśl unikalne warianty dopasowane do tematu artykułu, np. "poradnik na domena.pl", "w artykule o [temat]", "na domena.pl/blog", "przeczytaj na Firma", "artykuł Firma o [temat]".
 
 Dla każdego bloga wygeneruj 2 linki wewnętrzne do money page:
 - 1 kontekstowy (partial/exact match) — naturalnie wpleciony w treść artykułu
@@ -28,10 +29,16 @@ const ANCHOR_JSON_FORMAT = `
     },
     "blogs": [
       {
-        "exact": ["fraza bloga", "fraza bloga", "fraza bloga", "fraza bloga"],
-        "partial": ["wariant frazy bloga 1", "wariant frazy bloga 2", "wariant frazy bloga 3", "wariant frazy bloga 4"],
-        "brand": ["na blogu Firma", "artykuł na domena.pl", "Firma blog", "na blogu domena.pl", "blog domena.pl", "Firma"],
-        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+        "exact": ["fraza bloga A", "fraza bloga A", "fraza bloga A", "fraza bloga A"],
+        "partial": ["wariant frazy A 1", "wariant frazy A 2", "wariant frazy A 3", "wariant frazy A 4"],
+        "brand": ["poradnik na domena.pl", "artykuł Firma o [temat A]", "na domena.pl/blog", "Firma blog o [temat A]", "przeczytaj na domena.pl", "tekst na Firma"],
+        "generic": ["w tym poradniku", "przeczytaj artykuł", "dowiedz się więcej", "sprawdź szczegóły", "czytaj dalej", "zobacz poradnik"]
+      },
+      {
+        "exact": ["fraza bloga B", "fraza bloga B", "fraza bloga B", "fraza bloga B"],
+        "partial": ["wariant frazy B 1", "wariant frazy B 2", "wariant frazy B 3", "wariant frazy B 4"],
+        "brand": ["w artykule na domena.pl", "Firma — poradnik [temat B]", "na blogu domena.pl", "artykuł domena.pl o [temat B]", "Firma publikacja", "blog Firma"],
+        "generic": ["więcej w artykule", "pełny poradnik", "tutaj znajdziesz odpowiedź", "przeczytaj całość", "w tym tekście", "szczegóły w artykule"]
       }
     ]
   }`;
@@ -147,14 +154,14 @@ const EXAMPLE_TRAFFIC = `{
       {
         "exact": ["naklejanie folii na szybę na mokro", "naklejanie folii na szybę na mokro", "naklejanie folii na szybę na mokro", "naklejanie folii na szybę na mokro"],
         "partial": ["jak nakleić folię na szybę", "naklejanie folii na mokro instrukcja", "montaż folii na szybie", "folia na szybę krok po kroku"],
-        "brand": ["na blogu Folplex", "artykuł na folplex.pl", "Folplex blog", "na blogu folplex.pl", "blog folplex.pl", "Folplex"],
-        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+        "brand": ["poradnik na folplex.pl", "instrukcja Folplex", "Folplex — naklejanie folii", "na folplex.pl/blog", "artykuł Folplex o foliach", "przeczytaj na Folplex"],
+        "generic": ["w tym poradniku", "sprawdź instrukcję", "przeczytaj krok po kroku", "dowiedz się jak", "pełna instrukcja", "zobacz poradnik"]
       },
       {
         "exact": ["folia one way vision", "folia one way vision", "folia one way vision", "folia one way vision"],
         "partial": ["folia OWV na witryny", "co to jest folia one way vision", "folia perforowana na szyby", "folia one way vision cena"],
-        "brand": ["na blogu Folplex", "artykuł na folplex.pl", "Folplex blog", "na blogu folplex.pl", "blog folplex.pl", "Folplex"],
-        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+        "brand": ["w artykule na folplex.pl", "Folplex o folii OWV", "na blogu folplex.pl", "Folplex publikacja", "artykuł folplex.pl o OWV", "blog Folplex"],
+        "generic": ["więcej w artykule", "pełny przewodnik", "tutaj znajdziesz odpowiedź", "przeczytaj całość", "szczegóły w tekście", "dowiedz się więcej"]
       }
     ]
   },
@@ -201,14 +208,14 @@ const EXAMPLE_CLUSTER = `{
       {
         "exact": ["rodzaje folii na witryny", "rodzaje folii na witryny", "rodzaje folii na witryny", "rodzaje folii na witryny"],
         "partial": ["porównanie folii na witryny", "jaką folię wybrać na witrynę", "rodzaje folii okiennych", "folia na witrynę sklepową"],
-        "brand": ["na blogu Folplex", "artykuł na folplex.pl", "Folplex blog", "na blogu folplex.pl", "blog folplex.pl", "Folplex"],
-        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+        "brand": ["porównanie na folplex.pl", "Folplex — rodzaje folii", "artykuł Folplex o foliach", "na folplex.pl/blog", "przeczytaj na Folplex", "Folplex poradnik"],
+        "generic": ["w tym porównaniu", "przeczytaj zestawienie", "sprawdź różnice", "dowiedz się więcej", "pełne porównanie", "zobacz poradnik"]
       },
       {
         "exact": ["oklejanie witryn przepisy", "oklejanie witryn przepisy", "oklejanie witryn przepisy", "oklejanie witryn przepisy"],
         "partial": ["przepisy dotyczące oklejania witryn", "pozwolenie na oklejenie witryny", "oklejanie witryn a prawo", "formalności przy oklejaniu witryn"],
-        "brand": ["na blogu Folplex", "artykuł na folplex.pl", "Folplex blog", "na blogu folplex.pl", "blog folplex.pl", "Folplex"],
-        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+        "brand": ["w artykule na folplex.pl", "Folplex o przepisach", "na blogu folplex.pl", "publikacja Folplex", "artykuł folplex.pl o prawie", "Folplex blog"],
+        "generic": ["więcej o przepisach", "przeczytaj artykuł", "tutaj znajdziesz odpowiedź", "szczegóły w poradniku", "pełny przewodnik", "w tym tekście"]
       }
     ]
   },
