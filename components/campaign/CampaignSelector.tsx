@@ -175,10 +175,6 @@ export function CampaignSelector({
                     <span className="truncate text-sm font-medium text-white">
                       {keyword}
                     </span>
-                    <StatusBadge
-                      status={c.status}
-                      onSave={(v) => onUpdateStatus(c.id, v)}
-                    />
                   </div>
                   <div className="mt-0.5 text-xs text-slate-500">
                     {hasData
@@ -190,6 +186,11 @@ export function CampaignSelector({
                   →
                 </span>
               </button>
+
+              <StatusBadge
+                status={c.status}
+                onSave={(v) => onUpdateStatus(c.id, v)}
+              />
 
               {campaigns.length > 1 && (
                 <button
