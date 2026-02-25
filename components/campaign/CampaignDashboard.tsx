@@ -11,6 +11,7 @@ import { OfferAnchorsSection } from '@/components/dashboard/OfferAnchorsSection'
 import { BlogAnchorsSection } from '@/components/dashboard/BlogAnchorsSection';
 import { InternalLinksSection } from '@/components/dashboard/InternalLinksSection';
 import { TimelineSection } from '@/components/dashboard/TimelineSection';
+import { LlmOutput } from '@/components/dashboard/LlmOutput';
 
 export default function CampaignDashboard() {
   const {
@@ -142,6 +143,8 @@ export default function CampaignDashboard() {
 
               <TimelineSection timeline={plan.timeline} />
             </div>
+
+            <LlmOutput campaign={campaign} plan={plan} />
 
             <footer className="mt-16 max-w-5xl border-t border-slate-800 pt-8">
               <p className="text-xs leading-relaxed text-slate-500">
