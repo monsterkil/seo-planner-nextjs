@@ -9,6 +9,7 @@ import { HeroStats } from '@/components/dashboard/HeroStats';
 import { FlowDiagram } from '@/components/dashboard/FlowDiagram';
 import { OfferAnchorsSection } from '@/components/dashboard/OfferAnchorsSection';
 import { BlogAnchorsSection } from '@/components/dashboard/BlogAnchorsSection';
+import { InternalLinksSection } from '@/components/dashboard/InternalLinksSection';
 import { TimelineSection } from '@/components/dashboard/TimelineSection';
 import { LlmOutput } from '@/components/dashboard/LlmOutput';
 
@@ -134,6 +135,11 @@ export default function CampaignDashboard() {
                   weakSlices={plan.weakBlogSlices}
                 />
               )}
+
+              <InternalLinksSection
+                blogs={campaign.blogs}
+                links={campaign.internalLinks}
+              />
 
               <TimelineSection timeline={plan.timeline} />
             </div>

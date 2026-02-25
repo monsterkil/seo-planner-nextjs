@@ -15,6 +15,7 @@ import {
   generateStrongBlogAnchors,
   generateWeakBlogAnchors,
   parseAnchorsFromJson,
+  parseInternalLinksFromJson,
 } from '../anchors';
 
 const STORE_KEY = 'seo-planner-campaigns';
@@ -42,6 +43,7 @@ function createDefaultInput(): CampaignInput {
     weakMoneyAnchors: [],
     strongBlogAnchors: [],
     weakBlogAnchors: [],
+    internalLinks: [],
   };
 }
 
@@ -179,6 +181,7 @@ export function useCampaigns() {
         blogs: [...prev.blogs, blog],
         strongBlogAnchors: [...prev.strongBlogAnchors, []],
         weakBlogAnchors: [...prev.weakBlogAnchors, []],
+        internalLinks: [...prev.internalLinks, []],
       };
     });
   }, [updateActiveCampaign]);
@@ -196,6 +199,7 @@ export function useCampaigns() {
           blogs,
           strongBlogAnchors: prev.strongBlogAnchors.filter((_, i) => i !== idx),
           weakBlogAnchors: prev.weakBlogAnchors.filter((_, i) => i !== idx),
+          internalLinks: prev.internalLinks.filter((_, i) => i !== idx),
         };
       });
     },
@@ -258,6 +262,9 @@ export function useCampaigns() {
 
         // Use AI-generated anchors from JSON if present, otherwise fall back to generators
         const aiAnchors = raw.anchors ? parseAnchorsFromJson(raw.anchors) : null;
+        const aiInternalLinks = raw.internalLinks
+          ? parseInternalLinksFromJson(raw.internalLinks)
+          : blogs.map(() => [] as import('../types').AnchorItem[]);
 
         const newCampaign: CampaignInput = {
           mainKeyword,
@@ -283,6 +290,7 @@ export function useCampaigns() {
           weakBlogAnchors: aiAnchors?.weakBlogAnchors ?? blogs.map(() =>
             generateWeakBlogAnchors(companyName, companyUrl),
           ),
+          internalLinks: aiInternalLinks,
         };
 
         updateActiveCampaign(() => newCampaign);

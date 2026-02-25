@@ -63,6 +63,20 @@ export function parseAnchorsFromJson(raw: {
   return { strongMoneyAnchors, weakMoneyAnchors, strongBlogAnchors, weakBlogAnchors };
 }
 
+/** Parse internal links (blog → offer) from JSON. */
+export function parseInternalLinksFromJson(
+  raw: { text: string; type?: string; ctx?: string }[][],
+): AnchorItem[][] {
+  return raw.map((blogLinks) =>
+    blogLinks.map((l) => ({
+      id: uid(),
+      text: l.text || '',
+      type: (l.type as AnchorType) || 'p',
+      ctx: l.ctx,
+    })),
+  );
+}
+
 export function generateStrongMoneyAnchors(mainKeyword: string): AnchorItem[] {
   const kw = mainKeyword.trim();
   if (!kw) return [];

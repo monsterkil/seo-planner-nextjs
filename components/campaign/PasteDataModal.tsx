@@ -9,7 +9,12 @@ Wygeneruj też anchory (teksty linków) do kampanii PBN. Typy anchorów:
 - partial: fraza w naturalnym kontekście (np. "profesjonalne litery świetlne") — 6× dla oferty, 4× per blog
 - brand: nazwa firmy lub URL w różnych odmianach (np. "Folplex", "folplex.pl") — 10× dla oferty, 6× per blog
 - generic: ogólne CTA (np. "sprawdź ofertę", "tutaj", "więcej informacji") — 10× dla oferty, 6× per blog
-Każdy anchor unikalny i naturalnie brzmiący. Exact mogą się powtarzać.`;
+Każdy anchor unikalny i naturalnie brzmiący. Exact mogą się powtarzać.
+
+Dla każdego bloga wygeneruj 2 linki wewnętrzne do money page:
+- 1 kontekstowy (partial/exact match) — naturalnie wpleciony w treść artykułu
+- 1 CTA (generic) — w ramce, podsumowaniu lub sidebar
+Podaj anchor text, typ i kontekst umieszczenia w artykule.`;
 
 const ANCHOR_JSON_FORMAT = `
   "anchors": {
@@ -52,7 +57,13 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
     {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa", "volume": 400},
     {"title": "...", "keyword": "...", "volume": 300}
   ],
-${ANCHOR_JSON_FORMAT}
+${ANCHOR_JSON_FORMAT},
+  "internalLinks": [
+    [
+      {"text": "anchor kontekstowy", "type": "p", "ctx": "Gdzie w artykule umieścić link."},
+      {"text": "anchor CTA", "type": "g", "ctx": "Kontekst CTA w artykule."}
+    ]
+  ]
 }`;
 }
 
@@ -79,7 +90,13 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
     {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa"},
     {"title": "...", "keyword": "..."}
   ],
-${ANCHOR_JSON_FORMAT}
+${ANCHOR_JSON_FORMAT},
+  "internalLinks": [
+    [
+      {"text": "anchor kontekstowy", "type": "p", "ctx": "Gdzie w artykule umieścić link."},
+      {"text": "anchor CTA", "type": "g", "ctx": "Kontekst CTA w artykule."}
+    ]
+  ]
 }`;
 }
 
@@ -126,7 +143,17 @@ const EXAMPLE_TRAFFIC = `{
         "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
       }
     ]
-  }
+  },
+  "internalLinks": [
+    [
+      {"text": "oklejanie witryn sklepowych", "type": "p", "ctx": "W akapicie o technice mokrego naklejania — odniesienie do profesjonalnej usługi."},
+      {"text": "sprawdź ofertę oklejania", "type": "g", "ctx": "CTA box pod sekcją z instrukcją."}
+    ],
+    [
+      {"text": "oklejanie witryn folią OWV", "type": "p", "ctx": "Przy opisie zastosowań folii one way vision — link do realizacji."},
+      {"text": "zapytaj o wycenę", "type": "g", "ctx": "CTA w podsumowaniu artykułu."}
+    ]
+  ]
 }`;
 
 const EXAMPLE_CLUSTER = `{
@@ -170,7 +197,17 @@ const EXAMPLE_CLUSTER = `{
         "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
       }
     ]
-  }
+  },
+  "internalLinks": [
+    [
+      {"text": "rodzaje folii do oklejania witryn", "type": "p", "ctx": "W akapicie porównawczym — odniesienie do oferty oklejania."},
+      {"text": "sprawdź ofertę", "type": "g", "ctx": "CTA w podsumowaniu artykułu."}
+    ],
+    [
+      {"text": "oklejanie witryn Warszawa", "type": "e", "ctx": "Przy omawianiu formalności — link do strony z realizacjami."},
+      {"text": "zapytaj o wycenę", "type": "g", "ctx": "CTA box pod sekcją o przepisach."}
+    ]
+  ]
 }`;
 
 export function PasteDataModal({

@@ -64,8 +64,18 @@ function buildText(campaign: CampaignInput, plan: CalculatedPlan): string {
 
   // Internal links
   lines.push('LINKI WEWNĘTRZNE (blog → oferta):');
-  lines.push('  Każdy blog zawiera 2 linki do money page — anchory dobiera autor artykułu kontekstowo.');
-  lines.push('  Wytyczne: 1 link kontekstowy (partial/exact match frazy głównej), 1 CTA (generic).');
+  const hasInternalLinks = campaign.internalLinks?.some((l) => l.length > 0);
+  if (hasInternalLinks) {
+    campaign.blogs.forEach((blog, i) => {
+      const blogLinks = campaign.internalLinks[i] || [];
+      if (blogLinks.length > 0) {
+        lines.push(`  Blog ${blog.label}:`);
+        blogLinks.forEach((l) => lines.push(`    - „${l.text}"${l.ctx ? ` [kontekst: ${l.ctx}]` : ''}`));
+      }
+    });
+  } else {
+    lines.push('  Każdy blog zawiera 2 linki do money page — anchory dobiera autor artykułu kontekstowo.');
+  }
   lines.push('');
 
   // Timeline
@@ -87,10 +97,7 @@ function buildBlogBrief(campaign: CampaignInput): string {
   lines.push('');
 
   lines.push(`Do napisania: ${campaign.blogs.length} artykułów.`);
-  lines.push('Każdy artykuł powinien zawierać 2 linki wewnętrzne do money page (naturalnie wplecione w treść):');
-  lines.push('  - 1 link kontekstowy z anchorem partial/exact match frazy głównej (wpleciony naturalnie w akapit)');
-  lines.push('  - 1 link CTA z anchorem generic (np. „sprawdź ofertę", „zapytaj o wycenę" — w ramce, podsumowaniu lub sidebar)');
-  lines.push('Anchory dobiera autor artykułu — muszą pasować do kontekstu zdania, nie być sztucznie wklejone.');
+  lines.push('Każdy artykuł powinien zawierać 2 linki wewnętrzne do money page (naturalnie wplecione w treść).');
   lines.push('');
 
   campaign.blogs.forEach((blog, i) => {
@@ -99,6 +106,13 @@ function buildBlogBrief(campaign: CampaignInput): string {
     lines.push(`Fraza docelowa: ${blog.keyword || '—'}`);
     if (blog.volume > 0) lines.push(`Volume: ${blog.volume}`);
 
+    const blogLinks = campaign.internalLinks?.[i] || [];
+    if (blogLinks.length > 0) {
+      lines.push('Linki wewnętrzne do money page:');
+      blogLinks.forEach((l) => {
+        lines.push(`  - anchor: „${l.text}"${l.ctx ? ` → kontekst: ${l.ctx}` : ''}`);
+      });
+    }
     lines.push('');
   });
 
