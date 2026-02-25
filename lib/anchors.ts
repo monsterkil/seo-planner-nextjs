@@ -63,19 +63,44 @@ export function parseAnchorsFromJson(raw: {
   return { strongMoneyAnchors, weakMoneyAnchors, strongBlogAnchors, weakBlogAnchors };
 }
 
-/** Parse internal links (blog → offer) from JSON. Handles non-array gracefully. */
+const TYPE_MAP: Record<string, AnchorType> = {
+  exact: 'e', e: 'e',
+  partial: 'p', p: 'p',
+  brand: 'b', b: 'b',
+  generic: 'g', g: 'g',
+};
+
+function parseLink(l: { text?: string; type?: string; ctx?: string }): AnchorItem {
+  return {
+    id: uid(),
+    text: l?.text || '',
+    type: TYPE_MAP[l?.type || ''] || 'p',
+    ctx: l?.ctx,
+  };
+}
+
+/**
+ * Parse internal links (blog → offer) from JSON.
+ * Accepts two formats:
+ *   1. [[{text,type,ctx}, ...], ...]           — flat array of arrays
+ *   2. [{blog, links: [{text,type,ctx}]}, ...]  — array of objects with .links
+ */
 export function parseInternalLinksFromJson(
   raw: unknown,
 ): AnchorItem[][] {
   if (!Array.isArray(raw)) return [];
-  return raw.map((blogLinks: unknown) => {
-    if (!Array.isArray(blogLinks)) return [];
-    return blogLinks.map((l: { text?: string; type?: string; ctx?: string }) => ({
-      id: uid(),
-      text: l?.text || '',
-      type: (l?.type as AnchorType) || 'p',
-      ctx: l?.ctx,
-    }));
+  return raw.map((entry: unknown) => {
+    // Format 2: {blog: "...", links: [...]}
+    if (entry && typeof entry === 'object' && !Array.isArray(entry) && 'links' in entry) {
+      const links = (entry as { links: unknown }).links;
+      if (!Array.isArray(links)) return [];
+      return links.map(parseLink);
+    }
+    // Format 1: [{text, type, ctx}, ...]
+    if (Array.isArray(entry)) {
+      return entry.map(parseLink);
+    }
+    return [];
   });
 }
 
