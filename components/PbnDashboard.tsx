@@ -245,10 +245,11 @@ function InternalTable() {
   );
 }
 
-function Timeline() {
+const STRONG_PBN_OPTIONS = [10, 20, 30, 40, 50] as const;
+
+function Timeline({ totalS = 50 }: { totalS?: number }) {
   const months = 8;
-  const totalS = 50,
-    totalW = 60;
+  const totalW = 60;
   const sPerM = totalS / months,
     wPerM = totalW / months;
 
@@ -353,8 +354,11 @@ function Accordion({
 /* ── Main Dashboard ── */
 
 export default function PbnDashboard() {
+  const [strongPbnCount, setStrongPbnCount] = useState(50);
   const wb = blogLinks.map((n) => Math.round((n * 45) / 55));
   const blogVols = [1000, 700, 700, 600, 350, 250, 200];
+  const totalMonthly =
+    strongPbnCount * 1.5 + 60 * 0.2;
   const blogKws = [
     'atrakcje na wesele',
     'ścianka do zdjęć na 18 jak zrobić',
@@ -376,28 +380,6 @@ export default function PbnDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      {/* App header */}
-      <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/80">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 text-lg font-bold text-white shadow-lg shadow-violet-500/20">
-              PBN
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold text-white">
-                SEO Planner
-              </h1>
-              <p className="text-xs text-slate-500">
-                Plan kampanii · litery ze styroduru
-              </p>
-            </div>
-          </div>
-          <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
-            v2 — SERP verified
-          </span>
-        </div>
-      </header>
-
       <main className="mx-auto max-w-6xl px-6 py-8">
         {/* Hero + stats */}
         <section className="mb-10">
@@ -409,10 +391,29 @@ export default function PbnDashboard() {
               </span>
             </h2>
           </div>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+              Mocne PBN:
+            </span>
+            {STRONG_PBN_OPTIONS.map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setStrongPbnCount(n)}
+                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                  strongPbnCount === n
+                    ? 'bg-amber-500/30 text-amber-400 ring-1 ring-amber-500/50'
+                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-300'
+                }`}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-transparent p-5 shadow-lg">
               <div className="text-2xl font-bold text-amber-400">
-                50 <span className="text-sm font-normal text-slate-500">× 1,50 zł</span>
+                {strongPbnCount} <span className="text-sm font-normal text-slate-500">× 1,50 zł</span>
               </div>
               <div className="mt-1 text-xs font-medium uppercase tracking-wider text-slate-500">
                 Mocne PBN
@@ -428,7 +429,7 @@ export default function PbnDashboard() {
             </div>
             <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-transparent p-5">
               <div className="text-2xl font-bold text-emerald-400">
-                87 <span className="text-sm font-normal text-slate-500">zł/mies.</span>
+                {totalMonthly} <span className="text-sm font-normal text-slate-500">zł/mies.</span>
               </div>
               <div className="mt-1 text-xs font-medium uppercase tracking-wider text-slate-500">
                 Razem / miesiąc
@@ -515,31 +516,16 @@ export default function PbnDashboard() {
           </div>
         </section>
 
-        {/* Note */}
-        <div className="mb-10 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
-          <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-amber-400">
-            ⚠ Zmiany w v2 vs v1
-          </div>
-          <p className="text-sm leading-relaxed text-slate-400">
-            Wymieniono wszystkie 7 blogów. Stare miały{' '}
-            <strong className="text-rose-400">transakcyjny SERP</strong> — Google
-            pokazuje sklepy, blog by się nie przebił. Nowe 7 blogów mają
-            zweryfikowany informacyjny SERP i naturalny kontekst na link do liter
-            ze styroduru.
-          </p>
-        </div>
-
         {/* Sections */}
         <div className="space-y-8">
           <div>
             <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
-              💡 Pomysły na artykuły — 20 fraz
+              💡 Pomysły na artykuły
             </h3>
             <Accordion
               count={20}
               countColor="bg-fuchsia-500/20 text-fuchsia-400"
-              title="Frazy z Ahrefs — SERP zweryfikowany"
-              defaultOpen
+              title="Lista fraz"
             >
               <div className="overflow-x-auto rounded-xl border border-slate-800">
                 <table className="w-full min-w-[600px]">
@@ -648,7 +634,7 @@ export default function PbnDashboard() {
               countColor="bg-sky-500/20 text-sky-400"
               title="Timeline — miesiące"
             >
-              <Timeline />
+              <Timeline totalS={strongPbnCount} />
             </Accordion>
           </div>
 
