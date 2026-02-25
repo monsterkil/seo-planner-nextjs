@@ -1,5 +1,14 @@
 import type { BlogArticle, PlanDistribution } from '@/lib/types';
 
+function weakLabel(n: number): string {
+  if (n === 1) return '1 słaby link';
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14))
+    return `${n} słabe linki`;
+  return `${n} słabych linków`;
+}
+
 export function FlowDiagram({
   distribution,
   blogs,
@@ -28,7 +37,7 @@ export function FlowDiagram({
           <div className="text-xs font-medium uppercase text-slate-500">Mocne</div>
           <div className="mt-1 text-xs text-amber-400/80">→ oferta</div>
           <div className="mt-2 border-t border-slate-700/50 pt-2 text-xs text-slate-500">
-            +<strong className="text-slate-400">{weakDirect}</strong> słabych
+            +<strong className="text-slate-400">{weakLabel(weakDirect)}</strong>
           </div>
         </div>
 
@@ -45,7 +54,7 @@ export function FlowDiagram({
               → Blog {blog.label}
             </div>
             <div className="mt-2 border-t border-slate-700/50 pt-2 text-xs text-slate-500">
-              +<strong className="text-slate-400">{weakToBlogs[i] || 0}</strong> sł.
+              +<strong className="text-slate-400">{weakLabel(weakToBlogs[i] || 0)}</strong>
             </div>
           </div>
         ))}
