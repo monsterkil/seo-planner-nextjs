@@ -82,15 +82,49 @@ function buildText(campaign: CampaignInput, plan: CalculatedPlan): string {
   return lines.join('\n');
 }
 
-export function LlmOutput({
-  campaign,
-  plan,
-}: {
-  campaign: CampaignInput;
-  plan: CalculatedPlan;
-}) {
+function buildBlogBrief(campaign: CampaignInput): string {
+  const lines: string[] = [];
+
+  lines.push(`BRIEF: ARTYKUŁY BLOGOWE DLA KAMPANII „${campaign.mainKeyword}"`);
+  lines.push(`Firma: ${campaign.companyName || '—'} (${campaign.companyUrl || '—'})`);
+  lines.push(`Money page: ${campaign.moneyPageUrl || '—'}`);
+  lines.push(`Tryb: ${campaign.blogMode === 'cluster' ? 'cluster (topical authority — blogi wzmacniają tematycznie money page)' : 'traffic (informacyjne — blogi przyciągają ruch organiczny)'}`);
+  lines.push('');
+
+  lines.push(`Do napisania: ${campaign.blogs.length} artykułów.`);
+  lines.push('Każdy artykuł powinien zawierać 2 linki wewnętrzne do money page (naturalnie wplecione w treść).');
+  lines.push('');
+
+  campaign.blogs.forEach((blog, i) => {
+    lines.push(`--- BLOG ${blog.label} ---`);
+    lines.push(`Tytuł: ${blog.title || '—'}`);
+    lines.push(`Fraza docelowa: ${blog.keyword || '—'}`);
+    if (blog.volume > 0) lines.push(`Volume: ${blog.volume}`);
+
+    const links = campaign.internalLinks[i] || [];
+    if (links.length > 0) {
+      lines.push('Linki wewnętrzne do money page:');
+      links.forEach((l) => {
+        lines.push(`  - anchor: „${l.text}"${l.ctx ? ` → kontekst: ${l.ctx}` : ''}`);
+      });
+    }
+    lines.push('');
+  });
+
+  lines.push('WYTYCZNE:');
+  lines.push('- Artykuły informacyjne/poradnikowe, NIE ofertowe.');
+  lines.push('- Naturalny język, bez keyword stuffing.');
+  lines.push('- Linki do money page wplecione kontekstowo (nie na siłę).');
+  lines.push(`- Każdy artykuł zoptymalizowany pod swoją frazę docelową.`);
+  if (campaign.sitemapUrl) {
+    lines.push(`- NIE kanibalizować stron ofertowych (sitemap: ${campaign.sitemapUrl}).`);
+  }
+
+  return lines.join('\n');
+}
+
+function CopyBlock({ text, label }: { text: string; label: string }) {
   const [copied, setCopied] = useState(false);
-  const text = buildText(campaign, plan);
 
   const handleCopy = async () => {
     try {
@@ -103,9 +137,9 @@ export function LlmOutput({
   };
 
   return (
-    <details className="mt-8 max-w-5xl">
+    <details className="mt-4 max-w-5xl">
       <summary className="cursor-pointer text-xs text-slate-600 hover:text-slate-400">
-        LLM-friendly output (tekst do skopiowania)
+        {label}
       </summary>
       <div className="relative mt-2">
         <button
@@ -124,5 +158,20 @@ export function LlmOutput({
         </pre>
       </div>
     </details>
+  );
+}
+
+export function LlmOutput({
+  campaign,
+  plan,
+}: {
+  campaign: CampaignInput;
+  plan: CalculatedPlan;
+}) {
+  return (
+    <div className="mt-8">
+      <CopyBlock text={buildText(campaign, plan)} label="LLM output — plan linkowania" />
+      <CopyBlock text={buildBlogBrief(campaign)} label="LLM output — brief blogów do napisania" />
+    </div>
   );
 }
