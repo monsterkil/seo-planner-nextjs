@@ -14,6 +14,7 @@ import {
   generateWeakMoneyAnchors,
   generateStrongBlogAnchors,
   generateWeakBlogAnchors,
+  parseAnchorsFromJson,
 } from '../anchors';
 
 const STORE_KEY = 'seo-planner-campaigns';
@@ -255,6 +256,9 @@ export function useCampaigns() {
             ? (raw.linkProfile as LinkProfileKey)
             : 'balanced';
 
+        // Use AI-generated anchors from JSON if present, otherwise fall back to generators
+        const aiAnchors = raw.anchors ? parseAnchorsFromJson(raw.anchors) : null;
+
         const newCampaign: CampaignInput = {
           mainKeyword,
           volume: raw.volume || 0,
@@ -271,12 +275,12 @@ export function useCampaigns() {
           blogs,
           linkProfile,
           strongPbnCount: raw.strongPbnCount || 30,
-          strongMoneyAnchors: generateStrongMoneyAnchors(mainKeyword),
-          weakMoneyAnchors: generateWeakMoneyAnchors(companyName, companyUrl),
-          strongBlogAnchors: blogs.map((b: BlogArticle) =>
+          strongMoneyAnchors: aiAnchors?.strongMoneyAnchors ?? generateStrongMoneyAnchors(mainKeyword),
+          weakMoneyAnchors: aiAnchors?.weakMoneyAnchors ?? generateWeakMoneyAnchors(companyName, companyUrl),
+          strongBlogAnchors: aiAnchors?.strongBlogAnchors ?? blogs.map((b: BlogArticle) =>
             generateStrongBlogAnchors(b),
           ),
-          weakBlogAnchors: blogs.map(() =>
+          weakBlogAnchors: aiAnchors?.weakBlogAnchors ?? blogs.map(() =>
             generateWeakBlogAnchors(companyName, companyUrl),
           ),
         };

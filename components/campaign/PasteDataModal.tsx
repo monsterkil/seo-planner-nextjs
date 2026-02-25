@@ -3,12 +3,39 @@
 import { useState } from 'react';
 import type { BlogMode } from '@/lib/types';
 
+const ANCHOR_GUIDELINES = `
+Wygeneruj też anchory (teksty linków) do kampanii PBN. Typy anchorów:
+- exact: dokładna fraza kluczowa (np. "litery świetlne") — 7× dla oferty, 4× per blog
+- partial: fraza w naturalnym kontekście (np. "profesjonalne litery świetlne") — 6× dla oferty, 4× per blog
+- brand: nazwa firmy lub URL w różnych odmianach (np. "Folplex", "folplex.pl") — 10× dla oferty, 6× per blog
+- generic: ogólne CTA (np. "sprawdź ofertę", "tutaj", "więcej informacji") — 10× dla oferty, 6× per blog
+Każdy anchor unikalny i naturalnie brzmiący. Exact mogą się powtarzać.`;
+
+const ANCHOR_JSON_FORMAT = `
+  "anchors": {
+    "offer": {
+      "exact": ["fraza główna", "fraza główna", "fraza główna", "fraza główna", "fraza główna", "fraza główna", "fraza główna"],
+      "partial": ["profesjonalne X", "X na zamówienie", "X cena", "producent X", "zamów X", "X Warszawa"],
+      "brand": ["Firma", "domena.pl", "https://domena.pl", "oferta Firma", "na stronie domena.pl", "firma Firma", "Firma oferta", "strona Firma", "domena.pl", "Firma"],
+      "generic": ["tutaj", "sprawdź ofertę", "więcej informacji", "na tej stronie", "kliknij tutaj", "zobacz ofertę", "polecam", "link", "szczegóły oferty", "sprawdź"]
+    },
+    "blogs": [
+      {
+        "exact": ["fraza bloga", "fraza bloga", "fraza bloga", "fraza bloga"],
+        "partial": ["wariant frazy bloga 1", "wariant frazy bloga 2", "wariant frazy bloga 3", "wariant frazy bloga 4"],
+        "brand": ["na blogu Firma", "artykuł na domena.pl", "Firma blog", "na blogu domena.pl", "blog domena.pl", "Firma"],
+        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+      }
+    ]
+  }`;
+
 function buildPromptTraffic(sitemapUrl: string): string {
   const antiCannibal = sitemapUrl.trim()
     ? `\n\nWAŻNE: Artykuły blogowe NIE MOGĄ kanibalizować istniejących stron ofertowych. Sprawdź sitemap oferty: ${sitemapUrl.trim()} — jeśli fraza pasuje do już istniejącej strony ofertowej, NIE proponuj jej jako blog. Blogi mają być informacyjne/poradnikowe, nie ofertowe.\n`
     : '';
 
   return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.${antiCannibal}
+${ANCHOR_GUIDELINES}
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
 {
@@ -24,7 +51,8 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
   "blogs": [
     {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa", "volume": 400},
     {"title": "...", "keyword": "...", "volume": 300}
-  ]
+  ],
+${ANCHOR_JSON_FORMAT}
 }`;
 }
 
@@ -34,6 +62,7 @@ function buildPromptCluster(sitemapUrl: string): string {
     : '';
 
   return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz tematycznie powiązanych z money page, które budują topical authority wokół głównej frazy. To mogą być frazy o niskim lub zerowym ruchu — liczy się tematyczne wzmocnienie, nie traffic. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.${antiCannibal}
+${ANCHOR_GUIDELINES}
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
 {
@@ -49,7 +78,8 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
   "blogs": [
     {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa"},
     {"title": "...", "keyword": "..."}
-  ]
+  ],
+${ANCHOR_JSON_FORMAT}
 }`;
 }
 
@@ -74,7 +104,29 @@ const EXAMPLE_TRAFFIC = `{
       "keyword": "folia one way vision",
       "volume": 600
     }
-  ]
+  ],
+  "anchors": {
+    "offer": {
+      "exact": ["oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa"],
+      "partial": ["profesjonalne oklejanie witryn", "oklejanie witryn sklepowych", "oklejanie szyb folią Warszawa", "folie na witryny sklepowe", "zamów oklejanie witryn", "oklejanie witryn cena"],
+      "brand": ["Folplex", "folplex.pl", "https://folplex.pl", "oferta Folplex", "na stronie folplex.pl", "firma Folplex", "Folplex reklama", "realizacje Folplex", "folplex.pl", "Folplex"],
+      "generic": ["tutaj", "sprawdź ofertę", "więcej informacji", "na tej stronie", "kliknij tutaj", "zobacz ofertę", "polecam", "link", "szczegóły oferty", "sprawdź"]
+    },
+    "blogs": [
+      {
+        "exact": ["naklejanie folii na szybę na mokro", "naklejanie folii na szybę na mokro", "naklejanie folii na szybę na mokro", "naklejanie folii na szybę na mokro"],
+        "partial": ["jak nakleić folię na szybę", "naklejanie folii na mokro instrukcja", "montaż folii na szybie", "folia na szybę krok po kroku"],
+        "brand": ["na blogu Folplex", "artykuł na folplex.pl", "Folplex blog", "na blogu folplex.pl", "blog folplex.pl", "Folplex"],
+        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+      },
+      {
+        "exact": ["folia one way vision", "folia one way vision", "folia one way vision", "folia one way vision"],
+        "partial": ["folia OWV na witryny", "co to jest folia one way vision", "folia perforowana na szyby", "folia one way vision cena"],
+        "brand": ["na blogu Folplex", "artykuł na folplex.pl", "Folplex blog", "na blogu folplex.pl", "blog folplex.pl", "Folplex"],
+        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+      }
+    ]
+  }
 }`;
 
 const EXAMPLE_CLUSTER = `{
@@ -96,7 +148,29 @@ const EXAMPLE_CLUSTER = `{
       "title": "Oklejanie witryn a przepisy — czy potrzeba pozwolenia?",
       "keyword": "oklejanie witryn przepisy"
     }
-  ]
+  ],
+  "anchors": {
+    "offer": {
+      "exact": ["oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa", "oklejanie witryn Warszawa"],
+      "partial": ["profesjonalne oklejanie witryn", "oklejanie witryn sklepowych", "oklejanie szyb folią Warszawa", "folie na witryny sklepowe", "zamów oklejanie witryn", "oklejanie witryn cena"],
+      "brand": ["Folplex", "folplex.pl", "https://folplex.pl", "oferta Folplex", "na stronie folplex.pl", "firma Folplex", "Folplex reklama", "realizacje Folplex", "folplex.pl", "Folplex"],
+      "generic": ["tutaj", "sprawdź ofertę", "więcej informacji", "na tej stronie", "kliknij tutaj", "zobacz ofertę", "polecam", "link", "szczegóły oferty", "sprawdź"]
+    },
+    "blogs": [
+      {
+        "exact": ["rodzaje folii na witryny", "rodzaje folii na witryny", "rodzaje folii na witryny", "rodzaje folii na witryny"],
+        "partial": ["porównanie folii na witryny", "jaką folię wybrać na witrynę", "rodzaje folii okiennych", "folia na witrynę sklepową"],
+        "brand": ["na blogu Folplex", "artykuł na folplex.pl", "Folplex blog", "na blogu folplex.pl", "blog folplex.pl", "Folplex"],
+        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+      },
+      {
+        "exact": ["oklejanie witryn przepisy", "oklejanie witryn przepisy", "oklejanie witryn przepisy", "oklejanie witryn przepisy"],
+        "partial": ["przepisy dotyczące oklejania witryn", "pozwolenie na oklejenie witryny", "oklejanie witryn a prawo", "formalności przy oklejaniu witryn"],
+        "brand": ["na blogu Folplex", "artykuł na folplex.pl", "Folplex blog", "na blogu folplex.pl", "blog folplex.pl", "Folplex"],
+        "generic": ["w tym artykule", "czytaj więcej", "tutaj", "więcej informacji", "czytaj dalej", "w tym poradniku"]
+      }
+    ]
+  }
 }`;
 
 export function PasteDataModal({
@@ -244,7 +318,7 @@ export function PasteDataModal({
             <>
               <p className="mb-3 text-sm text-slate-400">
                 Wklej JSON z danymi kampanii (odpowiedź Claude z Ahrefs).
-                Anchory zostaną wygenerowane automatycznie.
+                Anchory z JSONa zostaną zaimportowane.
               </p>
 
               <textarea
