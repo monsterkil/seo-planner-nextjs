@@ -76,7 +76,7 @@ export default function CampaignDashboard() {
     <div className="min-h-screen bg-slate-950">
       <main className="mx-auto max-w-[1600px] px-6 py-8">
         {/* Back button */}
-        <div className="mx-auto mb-4 max-w-4xl">
+        <div className="mb-4 max-w-4xl">
           <button
             type="button"
             onClick={() => setView('list')}
@@ -87,7 +87,7 @@ export default function CampaignDashboard() {
         </div>
 
         {/* Form */}
-        <div className="mx-auto max-w-4xl">
+        <div className="max-w-4xl">
           <CampaignForm
             campaign={campaign}
             onUpdateField={updateField}
