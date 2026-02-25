@@ -51,7 +51,6 @@ export interface CampaignInput {
   weakMoneyAnchors: AnchorItem[];
   strongBlogAnchors: AnchorItem[][];
   weakBlogAnchors: AnchorItem[][];
-  internalLinks: AnchorItem[][];
 }
 
 export interface PlanDistribution {
