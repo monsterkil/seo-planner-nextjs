@@ -59,6 +59,7 @@ export interface CampaignInput {
   weakBlogAnchors: AnchorItem[][];
   internalLinks: AnchorItem[][];
   blogIdeas: BlogIdea[];
+  publishedBlogs: string[];
 }
 
 export interface PlanDistribution {
