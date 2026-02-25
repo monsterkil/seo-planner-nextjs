@@ -9,6 +9,15 @@ function weakLabel(n: number): string {
   return `${n} słabych linków`;
 }
 
+function strongAdj(n: number): string {
+  if (n === 1) return 'MOCNY';
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14))
+    return 'MOCNE';
+  return 'MOCNYCH';
+}
+
 export function FlowDiagram({
   distribution,
   blogs,
@@ -34,7 +43,7 @@ export function FlowDiagram({
         {/* Money page direct */}
         <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/15 to-transparent p-3 text-center shadow-lg">
           <div className="text-2xl font-bold text-amber-400">{strongDirect}</div>
-          <div className="text-xs font-medium uppercase text-slate-500">MOCNE → oferta</div>
+          <div className="text-xs font-medium text-slate-500">{strongAdj(strongDirect)} → oferta</div>
           <div className="mt-2 border-t border-slate-700/50 pt-2 text-xs text-slate-500">
             +<strong className="text-slate-400">{weakLabel(weakDirect)}</strong>
           </div>
@@ -49,8 +58,8 @@ export function FlowDiagram({
             <div className="text-2xl font-bold text-violet-400">
               {strongToBlogs[i] || 0}
             </div>
-            <div className="text-xs font-medium uppercase text-slate-500">
-              MOCNY → Blog {blog.label}
+            <div className="text-xs font-medium text-slate-500">
+              {strongAdj(strongToBlogs[i] || 0)} → Blog {blog.label}
             </div>
             <div className="mt-2 border-t border-slate-700/50 pt-2 text-xs text-slate-500">
               +<strong className="text-slate-400">{weakLabel(weakToBlogs[i] || 0)}</strong>
