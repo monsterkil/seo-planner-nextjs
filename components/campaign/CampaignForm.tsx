@@ -287,6 +287,7 @@ export function CampaignForm({
         onClose={() => setPasteOpen(false)}
         onImport={onImport}
         blogMode={campaign.blogMode}
+        mainKeyword={campaign.mainKeyword}
       />
     </section>
   );

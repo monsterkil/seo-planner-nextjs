@@ -92,11 +92,13 @@ export function PasteDataModal({
   onClose,
   onImport,
   blogMode,
+  mainKeyword,
 }: {
   open: boolean;
   onClose: () => void;
   onImport: (json: string) => string | null;
   blogMode: BlogMode;
+  mainKeyword: string;
 }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -105,7 +107,10 @@ export function PasteDataModal({
 
   if (!open) return null;
 
-  const promptTemplate = blogMode === 'cluster' ? PROMPT_CLUSTER : PROMPT_TRAFFIC;
+  const rawPrompt = blogMode === 'cluster' ? PROMPT_CLUSTER : PROMPT_TRAFFIC;
+  const promptTemplate = mainKeyword.trim()
+    ? rawPrompt.replace('[WPISZ TEMAT]', mainKeyword.trim())
+    : rawPrompt;
   const exampleJson = blogMode === 'cluster' ? EXAMPLE_CLUSTER : EXAMPLE_TRAFFIC;
 
   const handleImport = () => {
@@ -195,8 +200,11 @@ export function PasteDataModal({
             <>
               <p className="mb-3 text-sm text-slate-400">
                 {blogMode === 'cluster'
-                  ? 'Prompt pod blogi klastrowe (topical authority). Zamień [WPISZ TEMAT] na swój temat.'
-                  : 'Prompt pod blogi z ruchem (informacyjne). Zamień [WPISZ TEMAT] na swój temat.'}
+                  ? 'Prompt pod blogi klastrowe (topical authority).'
+                  : 'Prompt pod blogi z ruchem (informacyjne).'}
+                {mainKeyword.trim()
+                  ? ` Fraza "${mainKeyword.trim()}" już wstawiona.`
+                  : ' Zamień [WPISZ TEMAT] na swój temat.'}
               </p>
               <div className="relative">
                 <pre className="h-64 overflow-auto rounded-xl border border-slate-700 bg-slate-950 p-4 text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
