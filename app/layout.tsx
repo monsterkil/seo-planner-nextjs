@@ -15,8 +15,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SEO Planner — Plan PBN',
-  description: 'Plan budowy sieci PBN dla fraz związanych z literami ze styroduru',
+  title: 'SEO PBN Campaign Planner',
+  description: 'Uniwersalny planner kampanii PBN — dynamiczny rozkład linków, anchorów i timeline',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

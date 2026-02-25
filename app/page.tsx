@@ -1,5 +1,5 @@
-import PbnDashboard from '@/components/PbnDashboard';
+import CampaignDashboard from '@/components/campaign/CampaignDashboard';
 
 export default function Home() {
-  return <PbnDashboard />;
+  return <CampaignDashboard />;
 }
