@@ -1,5 +1,5 @@
 import type { AnchorItem, AnchorType, BlogArticle } from './types';
-import { GENERIC_ANCHORS, GENERIC_BLOG_ANCHORS } from './constants';
+import { GENERIC_ANCHORS } from './constants';
 
 let _counter = 0;
 function uid(): string {
@@ -172,20 +172,46 @@ export function generateStrongBlogAnchors(blog: BlogArticle): AnchorItem[] {
   return pool;
 }
 
+/** All possible generic anchors for blogs — rotated per blog for variety. */
+const ALL_BLOG_GENERICS = [
+  'w tym poradniku', 'przeczytaj artykuł', 'dowiedz się więcej',
+  'sprawdź szczegóły', 'czytaj dalej', 'zobacz poradnik',
+  'więcej w artykule', 'pełny przewodnik', 'przeczytaj całość',
+  'w tym tekście', 'szczegóły w artykule', 'tutaj',
+  'czytaj więcej', 'więcej informacji', 'w tym przewodniku',
+];
+
 export function generateWeakBlogAnchors(
+  blog: BlogArticle,
   companyName: string,
   companyUrl: string,
 ): AnchorItem[] {
   const name = companyName.trim();
   const url = companyUrl.trim().replace(/^https?:\/\//, '');
+  const topic = blog.keyword.trim() || blog.title.trim();
 
-  const brands = [
-    `na blogu ${name}`, `artykuł na ${url}`, `${name} blog`,
-    `na blogu ${url}`, `blog ${url}`, name,
-  ].filter(Boolean);
+  // Topic-aware brand anchors — unique per blog
+  const brands = (topic
+    ? [
+        `${name} o ${topic}`, `${topic} na ${url}`,
+        `poradnik ${name} — ${topic}`, `na ${url}/blog`,
+        `przeczytaj na ${name}`, `artykuł ${url} o ${topic}`,
+      ]
+    : [
+        `na blogu ${name}`, `artykuł na ${url}`, `${name} blog`,
+        `na ${url}/blog`, `przeczytaj na ${name}`, name,
+      ]
+  ).filter(Boolean);
+
+  // Rotate generics based on blog keyword hash — each blog gets different subset
+  const hash = (topic || 'x').split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const offset = hash % ALL_BLOG_GENERICS.length;
+  const generics: string[] = [];
+  for (let i = 0; i < 6; i++) {
+    generics.push(ALL_BLOG_GENERICS[(offset + i) % ALL_BLOG_GENERICS.length]);
+  }
 
   const pool: AnchorItem[] = [];
-  const generics = [...GENERIC_BLOG_ANCHORS];
   const maxLen = Math.max(brands.length, generics.length);
   for (let i = 0; i < maxLen; i++) {
     if (i < brands.length) pool.push({ id: uid(), text: brands[i], type: 'b' });

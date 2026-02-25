@@ -267,8 +267,8 @@ export function useCampaigns() {
       strongMoneyAnchors: generateStrongMoneyAnchors(prev.mainKeyword),
       weakMoneyAnchors: generateWeakMoneyAnchors(site.companyName, site.companyUrl),
       strongBlogAnchors: prev.blogs.map((b) => generateStrongBlogAnchors(b)),
-      weakBlogAnchors: prev.blogs.map(() =>
-        generateWeakBlogAnchors(site.companyName, site.companyUrl),
+      weakBlogAnchors: prev.blogs.map((b) =>
+        generateWeakBlogAnchors(b, site.companyName, site.companyUrl),
       ),
     }));
   }, [updateActiveCampaign, site.companyName, site.companyUrl]);
@@ -347,8 +347,8 @@ export function useCampaigns() {
           strongBlogAnchors: aiAnchors?.strongBlogAnchors ?? blogs.map((b: BlogArticle) =>
             generateStrongBlogAnchors(b),
           ),
-          weakBlogAnchors: aiAnchors?.weakBlogAnchors ?? blogs.map(() =>
-            generateWeakBlogAnchors(companyName, companyUrl),
+          weakBlogAnchors: aiAnchors?.weakBlogAnchors ?? blogs.map((b: BlogArticle) =>
+            generateWeakBlogAnchors(b, companyName, companyUrl),
           ),
           internalLinks: aiInternalLinks,
           publishedBlogs: [],
