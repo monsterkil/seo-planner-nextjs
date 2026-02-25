@@ -17,17 +17,6 @@ export function FlowDiagram({
       <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
         Przepływ mocy
       </h3>
-      <div className="mb-3 flex flex-wrap gap-4 text-xs text-slate-500">
-        <span className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-violet-500" />
-          mocne PBN (exact + partial) · 1,50 zł/mies.
-        </span>
-        <span className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-slate-500" />
-          słabe PBN (brand + generic + URL) · 0,20 zł/mies.
-        </span>
-      </div>
-
       {/* Top row: link counts */}
       <div
         className="grid gap-3"

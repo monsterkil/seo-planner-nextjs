@@ -121,7 +121,7 @@ export default function CampaignDashboard() {
               mainKeyword={campaign.mainKeyword}
             />
 
-            <div className="mx-auto max-w-5xl space-y-8">
+            <div className="max-w-5xl space-y-8">
               <OfferAnchorsSection
                 strongSlice={plan.strongMoneySlice}
                 weakSlice={plan.weakMoneySlice}
@@ -143,7 +143,7 @@ export default function CampaignDashboard() {
               <TimelineSection timeline={plan.timeline} />
             </div>
 
-            <footer className="mx-auto mt-16 max-w-5xl border-t border-slate-800 pt-8">
+            <footer className="mt-16 max-w-5xl border-t border-slate-800 pt-8">
               <p className="text-xs leading-relaxed text-slate-500">
                 Docelowy profil oferty: ~10% exact · ~20% partial · ~45% brand/URL ·
                 ~25% generic. Mocne PBN = exact + partial · Słabe PBN = brand +
