@@ -15,7 +15,8 @@ Dla każdego bloga wygeneruj 2 linki wewnętrzne do money page:
 - 1 kontekstowy (partial/exact match) — naturalnie wpleciony w treść artykułu
 - 1 CTA (generic) — w ramce, podsumowaniu lub sidebar
 Podaj anchor text, typ i kontekst umieszczenia w artykule.
-WAŻNE: Anchor musi uzupełniać treść artykułu, nie powtarzać jej. Np. w artykule o cenach NIE linkuj "sprawdź cennik" — zamiast tego "zamów wycenę" lub "zobacz realizacje". W artykule o przepisach NIE "sprawdź przepisy" — zamiast "zamów profesjonalny montaż".`;
+WAŻNE: Anchor musi uzupełniać treść artykułu, nie powtarzać jej. Np. w artykule o cenach NIE linkuj "sprawdź cennik" — zamiast tego "zamów wycenę" lub "zobacz realizacje".
+ZAKAZ: NIE wymyślaj konkretnych faktów o firmie (nazwy dostawców, lata gwarancji, certyfikaty, zakres usług dodatkowych). Używaj TYLKO ogólnych sformułowań: "sprawdź ofertę", "zamów wycenę", "zobacz realizacje", "skontaktuj się". Kontekst (ctx) też musi być ogólny — NIE pisz "sekcja o modułach Samsung" ani "ramka o 5-letniej gwarancji".`;
 
 const ANCHOR_JSON_FORMAT = `
   "anchors": {
