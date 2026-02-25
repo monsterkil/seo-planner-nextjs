@@ -43,8 +43,13 @@ export function calculateDistribution(
   const weakToBlogs = distributeByVolume(blogs, weakBlogs);
 
   const totalLinks = strongTotal + weakTotal;
-  const targets = 1 + blogs.length;
-  const months = Math.max(4, Math.min(12, Math.ceil(strongTotal / (targets * 4)) + 2));
+
+  // Max ~4 links per URL per month (1/week). Bottleneck = URL with most links.
+  const moneyLinks = strongDirect + weakDirect;
+  const blogLinksPerBlog = blogs.map((_, i) => (strongToBlogs[i] || 0) + (weakToBlogs[i] || 0));
+  const maxToSingleUrl = Math.max(moneyLinks, ...blogLinksPerBlog, 0);
+  const months = Math.max(3, Math.ceil(maxToSingleUrl / 4));
+
   const monthlyPrice = strongTotal * STRONG_PRICE + weakTotal * WEAK_PRICE;
 
   return {
