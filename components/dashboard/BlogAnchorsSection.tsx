@@ -6,13 +6,20 @@ export function BlogAnchorsSection({
   blogs,
   strongSlices,
   weakSlices,
+  usedAnchors,
+  onToggle,
 }: {
   blogs: BlogArticle[];
   strongSlices: AnchorItem[][];
   weakSlices: AnchorItem[][];
+  usedAnchors: string[];
+  onToggle: (ids: string[]) => void;
 }) {
-  const strongTotal = strongSlices.reduce((s, sl) => s + sl.length, 0);
-  const weakTotal = weakSlices.reduce((s, sl) => s + sl.length, 0);
+  const usedSet = new Set(usedAnchors);
+  const allStrong = strongSlices.flat();
+  const allWeak = weakSlices.flat();
+  const strongUsed = allStrong.filter((a) => usedSet.has(a.id)).length;
+  const weakUsed = allWeak.filter((a) => usedSet.has(a.id)).length;
 
   return (
     <div>
@@ -21,18 +28,18 @@ export function BlogAnchorsSection({
       </h3>
       <div className="space-y-3">
         <Accordion
-          count={strongTotal}
-          countColor="bg-violet-500/20 text-violet-400"
+          count={`${strongUsed}/${allStrong.length}`}
+          countColor={strongUsed === allStrong.length ? 'bg-emerald-500/20 text-emerald-400' : 'bg-violet-500/20 text-violet-400'}
           title="Mocne PBN → Blogi"
         >
-          <BlogAnchorTable blogs={blogs} slices={strongSlices} accent="text-violet-400" />
+          <BlogAnchorTable blogs={blogs} slices={strongSlices} accent="text-violet-400" usedAnchors={usedAnchors} onToggle={onToggle} />
         </Accordion>
         <Accordion
-          count={weakTotal}
-          countColor="bg-slate-500/20 text-slate-400"
+          count={`${weakUsed}/${allWeak.length}`}
+          countColor={weakUsed === allWeak.length ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-500/20 text-slate-400'}
           title="Słabe PBN → Blogi"
         >
-          <BlogAnchorTable blogs={blogs} slices={weakSlices} accent="text-slate-400" />
+          <BlogAnchorTable blogs={blogs} slices={weakSlices} accent="text-slate-400" usedAnchors={usedAnchors} onToggle={onToggle} />
         </Accordion>
       </div>
     </div>

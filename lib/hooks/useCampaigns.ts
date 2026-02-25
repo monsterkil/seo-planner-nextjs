@@ -53,6 +53,7 @@ function createDefaultInput(): CampaignInput {
     internalLinks: [],
     blogIdeas: [],
     publishedBlogs: [],
+    usedAnchors: [],
   };
 }
 
@@ -157,6 +158,7 @@ export function useCampaigns() {
     internalLinks: rawData.internalLinks ?? rawData.blogs?.map(() => []) ?? [],
     blogIdeas: rawData.blogIdeas ?? [],
     publishedBlogs: rawData.publishedBlogs ?? [],
+    usedAnchors: rawData.usedAnchors ?? [],
   };
 
   // --- Internal primitive ---
@@ -352,6 +354,7 @@ export function useCampaigns() {
           ),
           internalLinks: aiInternalLinks,
           publishedBlogs: [],
+          usedAnchors: [],
           blogIdeas: Array.isArray(raw.blogIdeas)
             ? raw.blogIdeas.map((b: { title?: string; keyword?: string; volume?: number }) => ({
                 title: b.title || '',

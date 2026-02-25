@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useCampaigns } from '@/lib/hooks/useCampaigns';
 import { useCalculatedPlan } from '@/lib/hooks/useCalculatedPlan';
 import { CampaignSelector } from './CampaignSelector';
@@ -57,6 +57,20 @@ export default function CampaignDashboard() {
     addCampaign();
     setView('detail');
   };
+
+  const toggleAnchors = useCallback(
+    (ids: string[]) => {
+      const current = new Set(campaign.usedAnchors);
+      const allUsed = ids.every((id) => current.has(id));
+      if (allUsed) {
+        ids.forEach((id) => current.delete(id));
+      } else {
+        ids.forEach((id) => current.add(id));
+      }
+      updateField('usedAnchors', [...current]);
+    },
+    [campaign.usedAnchors, updateField],
+  );
 
   const hasData = campaign.mainKeyword.trim() !== '' && campaign.blogs.length > 0;
 
@@ -131,6 +145,8 @@ export default function CampaignDashboard() {
               <OfferAnchorsSection
                 strongSlice={plan.strongMoneySlice}
                 weakSlice={plan.weakMoneySlice}
+                usedAnchors={campaign.usedAnchors}
+                onToggle={toggleAnchors}
               />
 
               {campaign.blogs.length > 0 && (
@@ -138,6 +154,8 @@ export default function CampaignDashboard() {
                   blogs={campaign.blogs}
                   strongSlices={plan.strongBlogSlices}
                   weakSlices={plan.weakBlogSlices}
+                  usedAnchors={campaign.usedAnchors}
+                  onToggle={toggleAnchors}
                 />
               )}
 

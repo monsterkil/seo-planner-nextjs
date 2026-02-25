@@ -1,33 +1,52 @@
 import { Fragment } from 'react';
-import type { AnchorItem, BlogArticle, GroupedAnchor } from '@/lib/types';
+import type { AnchorItem, BlogArticle, AnchorType } from '@/lib/types';
 import { Pill } from './Pill';
 import { tableTh, tableTd, tableTrHover } from './table-styles';
 
-function groupAnchors(list: AnchorItem[]): GroupedAnchor[] {
-  const g: Record<string, GroupedAnchor> = {};
+interface GroupedRow {
+  text: string;
+  type: AnchorType;
+  count: number;
+  ids: string[];
+}
+
+function groupAnchors(list: AnchorItem[]): GroupedRow[] {
+  const g: Record<string, GroupedRow> = {};
   list.forEach((i) => {
     const k = `${i.text}||${i.type}`;
-    if (!g[k]) g[k] = { text: i.text, type: i.type, count: 0 };
+    if (!g[k]) g[k] = { text: i.text, type: i.type, count: 0, ids: [] };
     g[k].count++;
+    g[k].ids.push(i.id);
   });
   const order: Record<string, number> = { e: 0, p: 1, b: 2, g: 3 };
   return Object.values(g).sort((a, b) => order[a.type] - order[b.type]);
 }
 
+const checkboxCls =
+  'h-3.5 w-3.5 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500/30 cursor-pointer';
+
 export function BlogAnchorTable({
   blogs,
   slices,
   accent,
+  usedAnchors,
+  onToggle,
 }: {
   blogs: BlogArticle[];
   slices: AnchorItem[][];
   accent: string;
+  usedAnchors?: string[];
+  onToggle?: (ids: string[]) => void;
 }) {
+  const used = new Set(usedAnchors ?? []);
+  const hasCb = !!onToggle;
+
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/50">
       <table className="w-full min-w-[400px]">
         <thead>
           <tr className="bg-slate-800/50">
+            {hasCb && <th className={`${tableTh} w-8`} />}
             <th className={tableTh}>Blog</th>
             <th className={tableTh}>Anchor</th>
             <th className={tableTh}>Typ</th>
@@ -43,24 +62,42 @@ export function BlogAnchorTable({
               <Fragment key={blog.id}>
                 <tr className="bg-slate-800/30">
                   <td
-                    colSpan={4}
+                    colSpan={hasCb ? 5 : 4}
                     className={`${tableTd} text-xs font-semibold text-slate-400`}
                   >
                     Blog {blog.label} · {blog.title || blog.keyword || '—'} · {items.length} linków
                   </td>
                 </tr>
-                {gr.map((i, gi) => (
-                  <tr key={`b-${idx}-${gi}`} className={tableTrHover}>
-                    <td className={`${tableTd} font-semibold text-violet-400`}>
-                      {blog.label}
-                    </td>
-                    <td className={`${tableTd} font-mono ${accent}`}>{i.text}</td>
-                    <td className={tableTd}>
-                      <Pill type={i.type} />
-                    </td>
-                    <td className={`${tableTd} font-medium`}>{i.count}</td>
-                  </tr>
-                ))}
+                {gr.map((i, gi) => {
+                  const allUsed = i.ids.every((id) => used.has(id));
+                  return (
+                    <tr
+                      key={`b-${idx}-${gi}`}
+                      className={`${tableTrHover} ${allUsed ? 'opacity-40' : ''}`}
+                    >
+                      {hasCb && (
+                        <td className={tableTd}>
+                          <input
+                            type="checkbox"
+                            checked={allUsed}
+                            onChange={() => onToggle!(i.ids)}
+                            className={checkboxCls}
+                          />
+                        </td>
+                      )}
+                      <td className={`${tableTd} font-semibold text-violet-400`}>
+                        {blog.label}
+                      </td>
+                      <td className={`${tableTd} font-mono ${accent} ${allUsed ? 'line-through' : ''}`}>
+                        {i.text}
+                      </td>
+                      <td className={tableTd}>
+                        <Pill type={i.type} />
+                      </td>
+                      <td className={`${tableTd} font-medium`}>{i.count}</td>
+                    </tr>
+                  );
+                })}
               </Fragment>
             );
           })}

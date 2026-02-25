@@ -60,6 +60,7 @@ export interface CampaignInput {
   internalLinks: AnchorItem[][];
   blogIdeas: BlogIdea[];
   publishedBlogs: string[];
+  usedAnchors: string[];
 }
 
 export interface PlanDistribution {
