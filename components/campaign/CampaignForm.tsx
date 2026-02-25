@@ -28,7 +28,7 @@ export function CampaignForm({
   onReset: () => void;
   onImport: (json: string) => string | null;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(() => campaign.mainKeyword.trim() === '');
   const [pasteOpen, setPasteOpen] = useState(false);
 
   const hasData = campaign.mainKeyword.trim() !== '';

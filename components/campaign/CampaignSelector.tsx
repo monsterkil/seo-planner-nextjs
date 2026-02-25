@@ -25,6 +25,7 @@ function StatusBadge({
           setEditing(false);
         }}
         onKeyDown={(e) => {
+          e.stopPropagation();
           if (e.key === 'Enter') {
             onSave(draft);
             setEditing(false);
