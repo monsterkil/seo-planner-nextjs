@@ -175,8 +175,6 @@ export default function CampaignDashboard() {
                 }}
               />
 
-              <TimelineSection timeline={plan.timeline} />
-
               <BlogIdeasSection ideas={campaign.blogIdeas} />
             </div>
 
