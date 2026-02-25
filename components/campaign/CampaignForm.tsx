@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { CampaignInput, BlogArticle, LinkProfileKey } from '@/lib/types';
+import type { CampaignInput, BlogArticle, LinkProfileKey, BlogMode } from '@/lib/types';
 import { LINK_PROFILES, MAX_BLOGS } from '@/lib/constants';
 import { BlogFieldGroup } from './BlogFieldGroup';
 import { PasteDataModal } from './PasteDataModal';
@@ -160,6 +160,38 @@ export function CampaignForm({
             </div>
           </div>
 
+          {/* Blog mode */}
+          <div>
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Tryb blogów
+            </label>
+            <div className="flex gap-2">
+              {([
+                { key: 'traffic' as BlogMode, label: 'Traffic', desc: 'frazy z ruchem (informacyjne)' },
+                { key: 'cluster' as BlogMode, label: 'Cluster', desc: 'topical authority (bez ruchu)' },
+              ]).map((mode) => {
+                const active = campaign.blogMode === mode.key;
+                return (
+                  <button
+                    key={mode.key}
+                    type="button"
+                    onClick={() => onUpdateField('blogMode', mode.key)}
+                    className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                      active
+                        ? mode.key === 'traffic'
+                          ? 'bg-sky-500/30 text-sky-400 ring-1 ring-sky-500/50'
+                          : 'bg-purple-500/30 text-purple-400 ring-1 ring-purple-500/50'
+                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                    }`}
+                  >
+                    <div>{mode.label}</div>
+                    <div className="mt-0.5 text-xs opacity-70">{mode.desc}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Blog articles */}
           <div>
             <div className="mb-2 flex items-center justify-between">
@@ -181,6 +213,7 @@ export function CampaignForm({
                 <BlogFieldGroup
                   key={blog.id}
                   blog={blog}
+                  blogMode={campaign.blogMode}
                   onUpdate={onUpdateBlog}
                   onRemove={onRemoveBlog}
                 />
@@ -225,6 +258,7 @@ export function CampaignForm({
         open={pasteOpen}
         onClose={() => setPasteOpen(false)}
         onImport={onImport}
+        blogMode={campaign.blogMode}
       />
     </section>
   );

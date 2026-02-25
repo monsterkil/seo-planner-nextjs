@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import type { BlogMode } from '@/lib/types';
 
-const PROMPT_TEMPLATE = `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
+const PROMPT_TRAFFIC = `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
 
 Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
 {
@@ -14,13 +15,33 @@ Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
   "companyUrl": "domena.pl",
   "strongPbnCount": 50,
   "linkProfile": "balanced",
+  "blogMode": "traffic",
   "blogs": [
     {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa", "volume": 400},
     {"title": "...", "keyword": "...", "volume": 300}
   ]
 }`;
 
-const EXAMPLE_JSON = `{
+const PROMPT_CLUSTER = `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz tematycznie powiązanych z money page, które budują topical authority wokół głównej frazy. To mogą być frazy o niskim lub zerowym ruchu — liczy się tematyczne wzmocnienie, nie traffic. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
+
+Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
+{
+  "mainKeyword": "fraza główna money page",
+  "volume": 200,
+  "kd": 1,
+  "moneyPageUrl": "/oferta/...",
+  "companyName": "Nazwa firmy",
+  "companyUrl": "domena.pl",
+  "strongPbnCount": 50,
+  "linkProfile": "balanced",
+  "blogMode": "cluster",
+  "blogs": [
+    {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa"},
+    {"title": "...", "keyword": "..."}
+  ]
+}`;
+
+const EXAMPLE_TRAFFIC = `{
   "mainKeyword": "oklejanie witryn Warszawa",
   "volume": 200,
   "kd": 1,
@@ -29,6 +50,7 @@ const EXAMPLE_JSON = `{
   "companyUrl": "folplex.pl",
   "strongPbnCount": 50,
   "linkProfile": "balanced",
+  "blogMode": "traffic",
   "blogs": [
     {
       "title": "Jak nakleić folię na szybę na mokro — instrukcja krok po kroku",
@@ -43,14 +65,38 @@ const EXAMPLE_JSON = `{
   ]
 }`;
 
+const EXAMPLE_CLUSTER = `{
+  "mainKeyword": "oklejanie witryn Warszawa",
+  "volume": 200,
+  "kd": 1,
+  "moneyPageUrl": "/oferta/oklejanie-witryn/",
+  "companyName": "Folplex",
+  "companyUrl": "folplex.pl",
+  "strongPbnCount": 50,
+  "linkProfile": "balanced",
+  "blogMode": "cluster",
+  "blogs": [
+    {
+      "title": "Rodzaje folii do oklejania witryn sklepowych — porównanie",
+      "keyword": "rodzaje folii na witryny"
+    },
+    {
+      "title": "Oklejanie witryn a przepisy — czy potrzeba pozwolenia?",
+      "keyword": "oklejanie witryn przepisy"
+    }
+  ]
+}`;
+
 export function PasteDataModal({
   open,
   onClose,
   onImport,
+  blogMode,
 }: {
   open: boolean;
   onClose: () => void;
   onImport: (json: string) => string | null;
+  blogMode: BlogMode;
 }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +104,9 @@ export function PasteDataModal({
   const [tab, setTab] = useState<'prompt' | 'paste'>('prompt');
 
   if (!open) return null;
+
+  const promptTemplate = blogMode === 'cluster' ? PROMPT_CLUSTER : PROMPT_TRAFFIC;
+  const exampleJson = blogMode === 'cluster' ? EXAMPLE_CLUSTER : EXAMPLE_TRAFFIC;
 
   const handleImport = () => {
     const err = onImport(value);
@@ -71,20 +120,20 @@ export function PasteDataModal({
   };
 
   const handleLoadExample = () => {
-    setValue(EXAMPLE_JSON);
+    setValue(exampleJson);
     setError(null);
     setTab('paste');
   };
 
   const handleCopyPrompt = async () => {
     try {
-      await navigator.clipboard.writeText(PROMPT_TEMPLATE);
+      await navigator.clipboard.writeText(promptTemplate);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // fallback
       const ta = document.createElement('textarea');
-      ta.value = PROMPT_TEMPLATE;
+      ta.value = promptTemplate;
       document.body.appendChild(ta);
       ta.select();
       document.execCommand('copy');
@@ -99,7 +148,12 @@ export function PasteDataModal({
       <div className="mx-4 w-full max-w-2xl rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
-          <h3 className="text-lg font-bold text-white">Wstaw dane</h3>
+          <h3 className="text-lg font-bold text-white">
+            Wstaw dane
+            <span className="ml-2 text-sm font-normal text-slate-500">
+              ({blogMode === 'cluster' ? 'cluster' : 'traffic'})
+            </span>
+          </h3>
           <button
             type="button"
             onClick={onClose}
@@ -140,12 +194,13 @@ export function PasteDataModal({
           {tab === 'prompt' ? (
             <>
               <p className="mb-3 text-sm text-slate-400">
-                Skopiuj ten prompt i wklej do rozmowy z Claude. Zamień [WPISZ TEMAT] na swój temat.
-                Claude sprawdzi Ahrefs i zwróci gotowy JSON.
+                {blogMode === 'cluster'
+                  ? 'Prompt pod blogi klastrowe (topical authority). Zamień [WPISZ TEMAT] na swój temat.'
+                  : 'Prompt pod blogi z ruchem (informacyjne). Zamień [WPISZ TEMAT] na swój temat.'}
               </p>
               <div className="relative">
                 <pre className="h-64 overflow-auto rounded-xl border border-slate-700 bg-slate-950 p-4 text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
-                  {PROMPT_TEMPLATE}
+                  {promptTemplate}
                 </pre>
                 <button
                   type="button"
@@ -193,7 +248,7 @@ export function PasteDataModal({
                   Format JSON — pokaż przykład
                 </summary>
                 <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-slate-950 p-3 text-xs text-slate-400">
-                  {EXAMPLE_JSON}
+                  {exampleJson}
                 </pre>
               </details>
             </>

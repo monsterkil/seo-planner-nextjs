@@ -21,6 +21,7 @@ function createDefaultInput(): CampaignInput {
     moneyPageUrl: '',
     companyName: '',
     companyUrl: '',
+    blogMode: 'traffic',
     blogs: [],
     linkProfile: 'balanced',
     strongPbnCount: 30,
@@ -145,6 +146,8 @@ export function useCampaign() {
       const companyName = raw.companyName || '';
       const companyUrl = raw.companyUrl || '';
 
+      const blogMode = raw.blogMode === 'cluster' ? 'cluster' as const : 'traffic' as const;
+
       const newCampaign: CampaignInput = {
         mainKeyword,
         volume: raw.volume || 0,
@@ -152,6 +155,7 @@ export function useCampaign() {
         moneyPageUrl: raw.moneyPageUrl || '',
         companyName,
         companyUrl,
+        blogMode,
         blogs,
         linkProfile: raw.linkProfile || 'balanced',
         strongPbnCount: raw.strongPbnCount || 30,
