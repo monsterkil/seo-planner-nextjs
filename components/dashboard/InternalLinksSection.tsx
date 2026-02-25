@@ -19,7 +19,7 @@ export function InternalLinksSection({
       <Accordion
         count={total}
         countColor="bg-emerald-500/20 text-emerald-400"
-        title="Blog → Oferta (kontekst linkowania)"
+        title="Blog → Oferta"
       >
         <InternalTable blogs={blogs} links={links} />
       </Accordion>

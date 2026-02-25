@@ -17,20 +17,20 @@ export function BlogAnchorsSection({
   return (
     <div>
       <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
-        Blogi ({blogs.map((b) => b.label).join('–')})
+        Blogi
       </h3>
       <div className="space-y-3">
         <Accordion
           count={strongTotal}
           countColor="bg-violet-500/20 text-violet-400"
-          title="Mocne PBN → Blogi (exact + partial)"
+          title="Mocne PBN → Blogi"
         >
           <BlogAnchorTable blogs={blogs} slices={strongSlices} accent="text-violet-400" />
         </Accordion>
         <Accordion
           count={weakTotal}
           countColor="bg-slate-500/20 text-slate-400"
-          title="Słabe PBN → Blogi (brand + generic)"
+          title="Słabe PBN → Blogi"
         >
           <BlogAnchorTable blogs={blogs} slices={weakSlices} accent="text-slate-400" />
         </Accordion>

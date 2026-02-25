@@ -18,14 +18,14 @@ export function OfferAnchorsSection({
         <Accordion
           count={strongSlice.length}
           countColor="bg-amber-500/20 text-amber-400"
-          title="Mocne PBN → Oferta (exact + partial)"
+          title="Mocne PBN → Oferta"
         >
           <AnchorTable items={strongSlice} accent="text-amber-400" />
         </Accordion>
         <Accordion
           count={weakSlice.length}
           countColor="bg-slate-500/20 text-slate-400"
-          title="Słabe PBN → Oferta (brand + generic + URL)"
+          title="Słabe PBN → Oferta"
         >
           <AnchorTable items={weakSlice} accent="text-slate-400" />
         </Accordion>
