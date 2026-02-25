@@ -28,7 +28,7 @@ export default function CampaignDashboard() {
   if (!hydrated) {
     return (
       <div className="min-h-screen bg-slate-950">
-        <main className="mx-auto max-w-6xl px-6 py-8">
+        <main className="mx-auto max-w-[1600px] px-6 py-8">
           <div className="animate-pulse text-slate-500">Ładowanie...</div>
         </main>
       </div>
@@ -39,7 +39,7 @@ export default function CampaignDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <main className="mx-auto max-w-6xl px-6 py-8">
+      <main className="mx-auto max-w-[1600px] px-6 py-8">
         <CampaignForm
           campaign={campaign}
           onUpdateField={updateField}

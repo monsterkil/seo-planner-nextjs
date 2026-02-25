@@ -13,10 +13,10 @@ export function FlowDiagram({
 
   return (
     <section className="mb-10">
-      <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-500">
+      <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
         Przepływ mocy
       </h3>
-      <div className="mb-4 flex flex-wrap gap-4 text-xs text-slate-500">
+      <div className="mb-3 flex flex-wrap gap-4 text-xs text-slate-500">
         <span className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-violet-500" />
           mocne PBN (exact + partial) · 1,50 zł/mies.
@@ -27,70 +27,63 @@ export function FlowDiagram({
         </span>
       </div>
 
-      {/* Top row: link counts */}
-      <div className={`grid gap-3 ${blogs.length > 0 ? `grid-cols-2 sm:grid-cols-4 lg:grid-cols-${Math.min(1 + blogs.length, 8)}` : ''}`}>
-        {/* Money page direct */}
-        <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/15 to-transparent p-4 text-center shadow-lg">
-          <div className="text-2xl font-bold text-amber-400">{strongDirect}</div>
-          <div className="text-xs font-medium uppercase text-slate-500">Mocne</div>
-          <div className="mt-1 text-xs text-amber-400/80">→ oferta</div>
-          <div className="mt-2 border-t border-slate-700/50 pt-2 text-xs text-slate-500">
-            +<strong className="text-slate-400">{weakDirect}</strong> słabych
+      {/* Single horizontal row — scrolls on overflow */}
+      <div className="flex gap-3 overflow-x-auto pb-2">
+        {/* Money page card */}
+        <div className="flex min-w-[160px] shrink-0 flex-col rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/15 to-transparent p-4 shadow-lg">
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="text-2xl font-bold text-amber-400">{strongDirect}</span>
+            <span className="text-xs text-slate-500">+{weakDirect} sł.</span>
+          </div>
+          <div className="mt-1 text-xs font-medium uppercase text-amber-400/80">
+            mocne → oferta
+          </div>
+          <div className="mt-auto pt-3 border-t border-slate-700/50">
+            <span className="inline-block rounded bg-amber-500/20 px-2 py-0.5 text-xs font-semibold text-amber-400">
+              Oferta
+            </span>
+            <div className="mt-1 truncate text-xs font-medium text-amber-400/90" title={mainKeyword}>
+              {mainKeyword || '—'}
+            </div>
           </div>
         </div>
 
         {/* Blog cards */}
-        {blogs.map((blog, i) => (
-          <div
-            key={blog.id}
-            className="rounded-2xl border border-slate-700 bg-slate-900/60 p-4 text-center transition hover:border-violet-500/30"
-          >
-            <div className="text-2xl font-bold text-violet-400">
-              {strongToBlogs[i] || 0}
-            </div>
-            <div className="text-xs font-medium uppercase text-slate-500">
-              → Blog {blog.label}
-            </div>
-            <div className="mt-2 border-t border-slate-700/50 pt-2 text-xs text-slate-500">
-              +<strong className="text-slate-400">{weakToBlogs[i] || 0}</strong> sł.
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="my-3 flex justify-center text-slate-600">↓</div>
-
-      {/* Bottom row: targets */}
-      <div className={`grid gap-3 ${blogs.length > 0 ? `grid-cols-2 sm:grid-cols-4 lg:grid-cols-${Math.min(1 + blogs.length, 8)}` : ''}`}>
-        {/* Money page */}
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-center">
-          <span className="inline-block rounded-lg bg-amber-500/20 px-2 py-0.5 text-xs font-semibold text-amber-400">
-            Oferta
-          </span>
-          <div className="mt-2 text-xs font-medium text-amber-400/90">
-            {mainKeyword || '—'}
-          </div>
-        </div>
-
-        {/* Blog targets */}
-        {blogs.map((blog) => (
-          <div
-            key={blog.id}
-            className="rounded-2xl border border-slate-700 bg-slate-900/60 p-4 text-center transition hover:border-violet-500/30"
-          >
-            <span className="inline-block rounded-lg bg-violet-500/20 px-2 py-0.5 text-xs font-semibold text-violet-400">
-              {blog.label}
-            </span>
+        {blogs.map((blog, i) => {
+          const strong = strongToBlogs[i] || 0;
+          const weak = weakToBlogs[i] || 0;
+          return (
             <div
-              className="mt-2 line-clamp-2 text-xs font-medium leading-snug text-slate-300"
-              title={blog.title}
+              key={blog.id}
+              className="flex min-w-[160px] shrink-0 flex-col rounded-2xl border border-slate-700 bg-slate-900/60 p-4 transition hover:border-violet-500/30"
             >
-              {blog.title || blog.keyword || '—'}
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="text-2xl font-bold text-violet-400">{strong}</span>
+                <span className="text-xs text-slate-500">+{weak} sł.</span>
+              </div>
+              <div className="mt-1 text-xs font-medium uppercase text-slate-500">
+                mocne → Blog {blog.label}
+              </div>
+              <div className="mt-auto pt-3 border-t border-slate-700/50">
+                <div className="flex items-center justify-between">
+                  <span className="inline-block rounded bg-violet-500/20 px-2 py-0.5 text-xs font-semibold text-violet-400">
+                    {blog.label}
+                  </span>
+                  {blog.volume > 0 && (
+                    <span className="text-xs text-slate-500">vol. {blog.volume}</span>
+                  )}
+                </div>
+                <div
+                  className="mt-1 line-clamp-2 text-xs font-medium leading-snug text-slate-300"
+                  title={blog.title || blog.keyword}
+                >
+                  {blog.title || blog.keyword || '—'}
+                </div>
+                <div className="mt-1 text-xs text-amber-500/70">2× link → oferta</div>
+              </div>
             </div>
-            <div className="mt-1 text-xs text-slate-500">vol. {blog.volume}</div>
-            <div className="mt-1 text-xs text-amber-500/70">2× link → oferta</div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
