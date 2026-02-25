@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { CampaignRecord } from '@/lib/types';
 
 function StatusBadge({
@@ -81,13 +81,38 @@ export function CampaignSelector({
   onAdd,
   onDelete,
   onUpdateStatus,
+  onReorder,
 }: {
   campaigns: CampaignRecord[];
   onSelect: (id: string) => void;
   onAdd: () => void;
   onDelete: (id: string) => void;
   onUpdateStatus: (id: string, status: string) => void;
+  onReorder: (fromIndex: number, toIndex: number) => void;
 }) {
+  const dragItem = useRef<number | null>(null);
+  const dragOverItem = useRef<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const handleDragStart = (index: number) => {
+    dragItem.current = index;
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    dragOverItem.current = index;
+    setDragOverIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    if (dragItem.current !== null && dragOverItem.current !== null && dragItem.current !== dragOverItem.current) {
+      onReorder(dragItem.current, dragOverItem.current);
+    }
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setDragOverIndex(null);
+  };
+
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-6 flex items-center justify-between">
@@ -102,16 +127,40 @@ export function CampaignSelector({
       </div>
 
       <div className="space-y-2">
-        {campaigns.map((c) => {
+        {campaigns.map((c, index) => {
           const keyword = c.data.mainKeyword || 'Nowa kampania';
           const blogCount = c.data.blogs.length;
           const hasData = c.data.mainKeyword.trim() !== '' && blogCount > 0;
+          const isDragOver = dragOverIndex === index && dragItem.current !== index;
 
           return (
             <div
               key={c.id}
-              className="group flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 px-5 py-4 transition hover:border-slate-700 hover:bg-slate-800/60"
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragEnd={handleDragEnd}
+              className={`group flex items-center justify-between rounded-xl border bg-slate-900/60 px-5 py-4 transition hover:border-slate-700 hover:bg-slate-800/60 ${
+                isDragOver
+                  ? 'border-amber-500/50 bg-amber-500/5'
+                  : 'border-slate-800'
+              }`}
             >
+              {/* Drag handle */}
+              <div
+                className="mr-3 flex shrink-0 cursor-grab items-center text-slate-700 opacity-0 transition active:cursor-grabbing group-hover:opacity-100"
+                title="Przeciągnij żeby zmienić kolejność"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <circle cx="5" cy="3" r="1.5" />
+                  <circle cx="11" cy="3" r="1.5" />
+                  <circle cx="5" cy="8" r="1.5" />
+                  <circle cx="11" cy="8" r="1.5" />
+                  <circle cx="5" cy="13" r="1.5" />
+                  <circle cx="11" cy="13" r="1.5" />
+                </svg>
+              </div>
+
               <button
                 type="button"
                 onClick={() => onSelect(c.id)}

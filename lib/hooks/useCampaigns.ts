@@ -213,6 +213,16 @@ export function useCampaigns() {
     }));
   }, []);
 
+  const reorderCampaigns = useCallback((fromIndex: number, toIndex: number) => {
+    setStore((s) => {
+      if (fromIndex === toIndex) return s;
+      const arr = [...s.campaigns];
+      const [moved] = arr.splice(fromIndex, 1);
+      arr.splice(toIndex, 0, moved);
+      return { ...s, campaigns: arr };
+    });
+  }, []);
+
   // --- Single-campaign mutators ---
   const updateField = useCallback(
     <K extends keyof CampaignInput>(key: K, value: CampaignInput[K]) => {
@@ -390,6 +400,7 @@ export function useCampaigns() {
     deleteCampaign,
     switchCampaign,
     updateCampaignStatus,
+    reorderCampaigns,
     // Site settings
     site,
     updateSite,
