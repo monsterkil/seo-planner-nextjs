@@ -13,7 +13,7 @@ export function OfferAnchorsSection({
   usedAnchors: string[];
   onToggle: (ids: string[]) => void;
 }) {
-  const usedSet = new Set(usedAnchors);
+  const usedSet = new Set(Array.isArray(usedAnchors) ? usedAnchors : []);
   const strongUsed = strongSlice.filter((a) => usedSet.has(a.id)).length;
   const weakUsed = weakSlice.filter((a) => usedSet.has(a.id)).length;
 

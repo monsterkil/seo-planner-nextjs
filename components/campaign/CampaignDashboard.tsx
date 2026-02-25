@@ -60,7 +60,8 @@ export default function CampaignDashboard() {
 
   const toggleAnchors = useCallback(
     (ids: string[]) => {
-      const current = new Set(campaign.usedAnchors);
+      const arr = Array.isArray(campaign.usedAnchors) ? campaign.usedAnchors : [];
+      const current = new Set(arr);
       const allUsed = ids.every((id) => current.has(id));
       if (allUsed) {
         ids.forEach((id) => current.delete(id));

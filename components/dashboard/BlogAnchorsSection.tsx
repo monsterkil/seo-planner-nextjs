@@ -15,7 +15,7 @@ export function BlogAnchorsSection({
   usedAnchors: string[];
   onToggle: (ids: string[]) => void;
 }) {
-  const usedSet = new Set(usedAnchors);
+  const usedSet = new Set(Array.isArray(usedAnchors) ? usedAnchors : []);
   const allStrong = strongSlices.flat();
   const allWeak = weakSlices.flat();
   const strongUsed = allStrong.filter((a) => usedSet.has(a.id)).length;
