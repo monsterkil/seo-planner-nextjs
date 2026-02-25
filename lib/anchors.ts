@@ -52,29 +52,31 @@ export function parseAnchorsFromJson(raw: {
     toItems(o.generic || [], 'g'),
   );
 
-  const blogGroups = raw.blogs || [];
-  const strongBlogAnchors = blogGroups.map((bg) =>
+  const blogGroups = Array.isArray(raw.blogs) ? raw.blogs : [];
+  const strongBlogAnchors = blogGroups.map((bg: AnchorGroup) =>
     interleave(toItems(bg.exact || [], 'e'), toItems(bg.partial || [], 'p')),
   );
-  const weakBlogAnchors = blogGroups.map((bg) =>
+  const weakBlogAnchors = blogGroups.map((bg: AnchorGroup) =>
     interleave(toItems(bg.brand || [], 'b'), toItems(bg.generic || [], 'g')),
   );
 
   return { strongMoneyAnchors, weakMoneyAnchors, strongBlogAnchors, weakBlogAnchors };
 }
 
-/** Parse internal links (blog → offer) from JSON. */
+/** Parse internal links (blog → offer) from JSON. Handles non-array gracefully. */
 export function parseInternalLinksFromJson(
-  raw: { text: string; type?: string; ctx?: string }[][],
+  raw: unknown,
 ): AnchorItem[][] {
-  return raw.map((blogLinks) =>
-    blogLinks.map((l) => ({
+  if (!Array.isArray(raw)) return [];
+  return raw.map((blogLinks: unknown) => {
+    if (!Array.isArray(blogLinks)) return [];
+    return blogLinks.map((l: { text?: string; type?: string; ctx?: string }) => ({
       id: uid(),
-      text: l.text || '',
-      type: (l.type as AnchorType) || 'p',
-      ctx: l.ctx,
-    })),
-  );
+      text: l?.text || '',
+      type: (l?.type as AnchorType) || 'p',
+      ctx: l?.ctx,
+    }));
+  });
 }
 
 export function generateStrongMoneyAnchors(mainKeyword: string): AnchorItem[] {
