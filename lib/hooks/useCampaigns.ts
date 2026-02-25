@@ -224,8 +224,8 @@ export function useCampaigns() {
       weakBlogAnchors: prev.blogs.map(() =>
         generateWeakBlogAnchors(prev.companyName, prev.companyUrl),
       ),
-      internalLinks: prev.blogs.map((b) =>
-        generateInternalLinks(b, prev.mainKeyword),
+      internalLinks: prev.blogs.map((b, i) =>
+        generateInternalLinks(b, prev.mainKeyword, i),
       ),
     }));
   }, [updateActiveCampaign]);
@@ -286,8 +286,8 @@ export function useCampaigns() {
           weakBlogAnchors: blogs.map(() =>
             generateWeakBlogAnchors(companyName, companyUrl),
           ),
-          internalLinks: blogs.map((b: BlogArticle) =>
-            generateInternalLinks(b, mainKeyword),
+          internalLinks: blogs.map((b: BlogArticle, i: number) =>
+            generateInternalLinks(b, mainKeyword, i),
           ),
         };
 

@@ -96,24 +96,67 @@ export function generateWeakBlogAnchors(
   return pool;
 }
 
+const CONTEXTUAL_PATTERNS = [
+  (kw: string) => `${kw} na zamówienie`,
+  (kw: string) => `producent ${kw}`,
+  (kw: string) => `profesjonalne ${kw}`,
+  (kw: string) => `oferta ${kw}`,
+  (kw: string) => `${kw} od producenta`,
+  (kw: string) => `sprawdź ${kw}`,
+  (kw: string) => `${kw} — realizacja`,
+];
+
+const CTA_PATTERNS = [
+  (kw: string) => `zamów ${kw}`,
+  () => 'sprawdź ofertę',
+  () => 'sprawdź cennik',
+  (kw: string) => `zobacz ofertę ${kw}`,
+  () => 'zapytaj o wycenę',
+  () => 'dobierz rozwiązanie',
+  () => 'porównaj i zamów',
+];
+
+const CTX_PATTERNS = [
+  (title: string) => `Naturalnie w treści artykułu "${title}" — odniesienie do oferty.`,
+  (title: string) => `Akapit porównawczy w "${title}" z linkiem do oferty.`,
+  (title: string) => `W podsumowaniu artykułu "${title}".`,
+  (title: string) => `Ramka „Przeczytaj też" w "${title}".`,
+  (title: string) => `Kontekst w "${title}" — przy omawianiu realizacji.`,
+  (title: string) => `W sekcji FAQ artykułu "${title}".`,
+  (title: string) => `W akapicie o wyborze dostawcy w "${title}".`,
+];
+
+const CTA_CTX_PATTERNS = [
+  'CTA w ramce na końcu akapitu.',
+  'CTA box pod pierwszą sekcją artykułu.',
+  'Banner CTA po podsumowaniu.',
+  'Wyróżniony link w sekcji „Co dalej?".',
+  'Przycisk CTA w sidebar artykułu.',
+  'Link w ramce „Potrzebujesz wyceny?".',
+  'CTA w podsumowaniu artykułu.',
+];
+
 export function generateInternalLinks(
   blog: BlogArticle,
   mainKeyword: string,
+  index: number = 0,
 ): AnchorItem[] {
   const kw = mainKeyword.trim();
-  const blogKw = blog.keyword.trim();
+  const ctxIdx = index % CONTEXTUAL_PATTERNS.length;
+  const ctaIdx = index % CTA_PATTERNS.length;
+
   return [
     {
       id: uid(),
-      text: `${kw} ${blogKw.split(' ').slice(0, 2).join(' ')}`.trim(),
+      text: CONTEXTUAL_PATTERNS[ctxIdx](kw),
       type: 'p',
-      ctx: `Kontekst w artykule "${blog.title}" — odniesienie do oferty.`,
+      ctx: CTX_PATTERNS[index % CTX_PATTERNS.length](blog.title || blog.keyword),
     },
     {
       id: uid(),
-      text: `zamów ${kw}`,
+      text: CTA_PATTERNS[ctaIdx](kw),
       type: 'g',
-      ctx: 'CTA w ramce na końcu akapitu.',
+      ctx: CTA_CTX_PATTERNS[index % CTA_CTX_PATTERNS.length],
     },
   ];
 }
