@@ -303,7 +303,11 @@ export function CampaignForm({
       <PasteDataModal
         open={pasteOpen}
         onClose={() => setPasteOpen(false)}
-        onImport={onImport}
+        onImport={(json) => {
+          const err = onImport(json);
+          if (!err) setExpanded(false);
+          return err;
+        }}
         blogMode={campaign.blogMode}
         mainKeyword={campaign.mainKeyword}
         sitemapUrl={campaign.sitemapUrl}
