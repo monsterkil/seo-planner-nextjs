@@ -96,8 +96,15 @@ export interface CampaignRecord {
   data: CampaignInput;
 }
 
+export interface SiteSettings {
+  companyName: string;
+  companyUrl: string;
+  sitemapUrl: string;
+}
+
 export interface CampaignsStore {
   version: 1;
   campaigns: CampaignRecord[];
   activeCampaignId: string | null;
+  site: SiteSettings;
 }

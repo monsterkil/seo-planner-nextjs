@@ -7,6 +7,7 @@ import type {
   LinkProfileKey,
   CampaignRecord,
   CampaignsStore,
+  SiteSettings,
 } from '../types';
 import { BLOG_LABELS, LINK_PROFILES } from '../constants';
 import {
@@ -20,6 +21,12 @@ import {
 
 const STORE_KEY = 'seo-planner-campaigns';
 const OLD_KEY = 'seo-planner-campaign';
+
+const DEFAULT_SITE: SiteSettings = {
+  companyName: '',
+  companyUrl: '',
+  sitemapUrl: '',
+};
 
 function generateId(): string {
   return `cmp_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
@@ -60,17 +67,28 @@ function createRecord(data?: CampaignInput): CampaignRecord {
 
 function createInitialStore(): CampaignsStore {
   const record = createRecord();
-  return { version: 1, campaigns: [record], activeCampaignId: record.id };
+  return { version: 1, campaigns: [record], activeCampaignId: record.id, site: { ...DEFAULT_SITE } };
 }
 
-/** Migrate old single-campaign format to multi-campaign store. */
+/** Migrate old formats + ensure site settings exist. */
 function loadWithMigration(): CampaignsStore {
   // Try new format first
   try {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as CampaignsStore;
-      if (parsed.version === 1 && parsed.campaigns?.length > 0) return parsed;
+      if (parsed.version === 1 && parsed.campaigns?.length > 0) {
+        // Migrate: pull site settings from first campaign if store doesn't have them
+        if (!parsed.site) {
+          const first = parsed.campaigns[0]?.data;
+          parsed.site = {
+            companyName: first?.companyName || '',
+            companyUrl: first?.companyUrl || '',
+            sitemapUrl: first?.sitemapUrl || '',
+          };
+        }
+        return parsed;
+      }
     }
   } catch { /* corrupt data */ }
 
@@ -84,6 +102,11 @@ function loadWithMigration(): CampaignsStore {
         version: 1,
         campaigns: [record],
         activeCampaignId: record.id,
+        site: {
+          companyName: data.companyName || '',
+          companyUrl: data.companyUrl || '',
+          sitemapUrl: data.sitemapUrl || '',
+        },
       };
       localStorage.removeItem(OLD_KEY);
       return store;
@@ -111,12 +134,25 @@ export function useCampaigns() {
     } catch { /* quota exceeded */ }
   }, [store, hydrated]);
 
+  // --- Site settings ---
+  const site = store.site ?? DEFAULT_SITE;
+
+  const updateSite = useCallback(
+    <K extends keyof SiteSettings>(key: K, value: SiteSettings[K]) => {
+      setStore((s) => ({ ...s, site: { ...(s.site ?? DEFAULT_SITE), [key]: value } }));
+    },
+    [],
+  );
+
   // --- Derived ---
   const activeCampaign = store.campaigns.find((c) => c.id === store.activeCampaignId);
   const rawData = activeCampaign?.data ?? createDefaultInput();
-  // Ensure internalLinks exists (may be missing from older localStorage data)
+  // Merge store-level site settings + ensure arrays exist
   const campaign: CampaignInput = {
     ...rawData,
+    companyName: site.companyName,
+    companyUrl: site.companyUrl,
+    sitemapUrl: site.sitemapUrl,
     internalLinks: rawData.internalLinks ?? rawData.blogs?.map(() => []) ?? [],
     blogIdeas: rawData.blogIdeas ?? [],
   };
@@ -164,7 +200,7 @@ export function useCampaigns() {
     setStore((s) => ({ ...s, activeCampaignId: id }));
   }, []);
 
-  // --- Single-campaign mutators (same API as old useCampaign) ---
+  // --- Single-campaign mutators ---
   const updateField = useCallback(
     <K extends keyof CampaignInput>(key: K, value: CampaignInput[K]) => {
       updateActiveCampaign((prev) => ({ ...prev, [key]: value }));
@@ -227,13 +263,13 @@ export function useCampaigns() {
     updateActiveCampaign((prev) => ({
       ...prev,
       strongMoneyAnchors: generateStrongMoneyAnchors(prev.mainKeyword),
-      weakMoneyAnchors: generateWeakMoneyAnchors(prev.companyName, prev.companyUrl),
+      weakMoneyAnchors: generateWeakMoneyAnchors(site.companyName, site.companyUrl),
       strongBlogAnchors: prev.blogs.map((b) => generateStrongBlogAnchors(b)),
       weakBlogAnchors: prev.blogs.map(() =>
-        generateWeakBlogAnchors(prev.companyName, prev.companyUrl),
+        generateWeakBlogAnchors(site.companyName, site.companyUrl),
       ),
     }));
-  }, [updateActiveCampaign]);
+  }, [updateActiveCampaign, site.companyName, site.companyUrl]);
 
   const resetCampaign = useCallback(() => {
     updateActiveCampaign(() => createDefaultInput());
@@ -257,8 +293,24 @@ export function useCampaigns() {
           );
 
         const mainKeyword = raw.mainKeyword || '';
-        const companyName = raw.companyName || '';
-        const companyUrl = raw.companyUrl || '';
+
+        // Update site settings from JSON if provided
+        const jsonCompanyName = raw.companyName || '';
+        const jsonCompanyUrl = raw.companyUrl || '';
+        const jsonSitemapUrl = raw.sitemapUrl || '';
+        if (jsonCompanyName || jsonCompanyUrl || jsonSitemapUrl) {
+          setStore((s) => ({
+            ...s,
+            site: {
+              companyName: jsonCompanyName || s.site?.companyName || '',
+              companyUrl: jsonCompanyUrl || s.site?.companyUrl || '',
+              sitemapUrl: jsonSitemapUrl || s.site?.sitemapUrl || '',
+            },
+          }));
+        }
+
+        const companyName = jsonCompanyName || site.companyName;
+        const companyUrl = jsonCompanyUrl || site.companyUrl;
 
         const blogMode =
           raw.blogMode === 'traffic' ? ('traffic' as const) : ('cluster' as const);
@@ -267,7 +319,6 @@ export function useCampaigns() {
             ? (raw.linkProfile as LinkProfileKey)
             : 'balanced';
 
-        // Use AI-generated anchors from JSON if present, otherwise fall back to generators
         const aiAnchors = raw.anchors ? parseAnchorsFromJson(raw.anchors) : null;
         const aiInternalLinks = raw.internalLinks
           ? parseInternalLinksFromJson(raw.internalLinks)
@@ -280,7 +331,7 @@ export function useCampaigns() {
           moneyPageUrl: raw.moneyPageUrl || '',
           companyName,
           companyUrl,
-          sitemapUrl: raw.sitemapUrl || '',
+          sitemapUrl: jsonSitemapUrl || site.sitemapUrl,
           blogMode,
           linkDistribution:
             raw.linkDistribution === 'equal'
@@ -313,7 +364,7 @@ export function useCampaigns() {
         return e instanceof Error ? e.message : 'Nieprawidłowy format JSON';
       }
     },
-    [updateActiveCampaign],
+    [updateActiveCampaign, site],
   );
 
   return {
@@ -323,6 +374,9 @@ export function useCampaigns() {
     addCampaign,
     deleteCampaign,
     switchCampaign,
+    // Site settings
+    site,
+    updateSite,
     // Single-campaign (same API)
     campaign,
     hydrated,

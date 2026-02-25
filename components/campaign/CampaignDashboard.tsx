@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCampaigns } from '@/lib/hooks/useCampaigns';
 import { useCalculatedPlan } from '@/lib/hooks/useCalculatedPlan';
 import { CampaignSelector } from './CampaignSelector';
+import { SiteSettings } from './SiteSettings';
 import { CampaignForm } from './CampaignForm';
 import { HeroStats } from '@/components/dashboard/HeroStats';
 import { FlowDiagram } from '@/components/dashboard/FlowDiagram';
@@ -21,6 +22,8 @@ export default function CampaignDashboard() {
     addCampaign,
     deleteCampaign,
     switchCampaign,
+    site,
+    updateSite,
     campaign,
     hydrated,
     updateField,
@@ -61,7 +64,8 @@ export default function CampaignDashboard() {
   if (view === 'list') {
     return (
       <div className="min-h-screen bg-slate-950">
-        <main className="px-6 py-8">
+        <main className="mx-auto max-w-4xl px-6 py-8">
+          <SiteSettings site={site} onUpdate={updateSite} />
           <CampaignSelector
             campaigns={campaigns}
             onSelect={handleSelect}

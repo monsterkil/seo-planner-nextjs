@@ -46,7 +46,7 @@ export function CampaignForm({
           </span>
           <span className="text-sm font-medium text-slate-300">
             {hasData
-              ? `${campaign.mainKeyword} · ${campaign.blogs.length} blogów · ${campaign.companyName || '—'}`
+              ? `${campaign.mainKeyword} · ${campaign.blogs.length} blogów`
               : 'Konfiguracja kampanii'}
           </span>
         </span>
@@ -107,45 +107,6 @@ export function CampaignForm({
               className={`${inputCls} text-ellipsis-none`}
               style={{ textOverflow: 'clip' }}
             />
-          </div>
-
-          {/* Sitemap URL */}
-          <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Sitemap oferty (do anti-kanibalizacji w prompcie)
-            </label>
-            <input
-              type="text"
-              placeholder="np. https://folplex.pl/ct_offer-sitemap.xml"
-              value={campaign.sitemapUrl}
-              onChange={(e) => onUpdateField('sitemapUrl', e.target.value)}
-              onFocus={(e) => e.target.select()}
-              className={inputCls}
-              style={{ textOverflow: 'clip' }}
-            />
-          </div>
-
-          {/* Company info */}
-          <div>
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Firma (do brand anchorów)
-            </label>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <input
-                type="text"
-                placeholder="Nazwa firmy"
-                value={campaign.companyName}
-                onChange={(e) => onUpdateField('companyName', e.target.value)}
-                className={inputCls}
-              />
-              <input
-                type="text"
-                placeholder="URL firmy (np. folplex.pl)"
-                value={campaign.companyUrl}
-                onChange={(e) => onUpdateField('companyUrl', e.target.value)}
-                className={inputCls}
-              />
-            </div>
           </div>
 
           {/* Link profile */}
