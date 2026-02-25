@@ -14,7 +14,8 @@ Każdy anchor unikalny i naturalnie brzmiący. Exact mogą się powtarzać.
 Dla każdego bloga wygeneruj 2 linki wewnętrzne do money page:
 - 1 kontekstowy (partial/exact match) — naturalnie wpleciony w treść artykułu
 - 1 CTA (generic) — w ramce, podsumowaniu lub sidebar
-Podaj anchor text, typ i kontekst umieszczenia w artykule.`;
+Podaj anchor text, typ i kontekst umieszczenia w artykule.
+WAŻNE: Anchor musi uzupełniać treść artykułu, nie powtarzać jej. Np. w artykule o cenach NIE linkuj "sprawdź cennik" — zamiast tego "zamów wycenę" lub "zobacz realizacje". W artykule o przepisach NIE "sprawdź przepisy" — zamiast "zamów profesjonalny montaż".`;
 
 const ANCHOR_JSON_FORMAT = `
   "anchors": {
