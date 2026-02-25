@@ -2,6 +2,24 @@
 
 import { useState } from 'react';
 
+const PROMPT_TEMPLATE = `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 5-7 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
+
+Zwróć wynik TYLKO jako JSON (bez komentarzy) w tym formacie:
+{
+  "mainKeyword": "fraza główna money page",
+  "volume": 200,
+  "kd": 1,
+  "moneyPageUrl": "/oferta/...",
+  "companyName": "Nazwa firmy",
+  "companyUrl": "domena.pl",
+  "strongPbnCount": 50,
+  "linkProfile": "balanced",
+  "blogs": [
+    {"title": "Tytuł artykułu SEO", "keyword": "fraza docelowa", "volume": 400},
+    {"title": "...", "keyword": "...", "volume": 300}
+  ]
+}`;
+
 const EXAMPLE_JSON = `{
   "mainKeyword": "oklejanie witryn Warszawa",
   "volume": 200,
@@ -36,6 +54,8 @@ export function PasteDataModal({
 }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<'prompt' | 'paste'>('prompt');
 
   if (!open) return null;
 
@@ -53,6 +73,25 @@ export function PasteDataModal({
   const handleLoadExample = () => {
     setValue(EXAMPLE_JSON);
     setError(null);
+    setTab('paste');
+  };
+
+  const handleCopyPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(PROMPT_TEMPLATE);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = PROMPT_TEMPLATE;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
@@ -70,39 +109,95 @@ export function PasteDataModal({
           </button>
         </div>
 
+        {/* Tabs */}
+        <div className="flex border-b border-slate-800">
+          <button
+            type="button"
+            onClick={() => setTab('prompt')}
+            className={`flex-1 px-6 py-3 text-sm font-medium transition ${
+              tab === 'prompt'
+                ? 'border-b-2 border-sky-400 text-sky-400'
+                : 'text-slate-500 hover:text-slate-300'
+            }`}
+          >
+            1. Prompt do Claude
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab('paste')}
+            className={`flex-1 px-6 py-3 text-sm font-medium transition ${
+              tab === 'paste'
+                ? 'border-b-2 border-amber-400 text-amber-400'
+                : 'text-slate-500 hover:text-slate-300'
+            }`}
+          >
+            2. Wklej JSON
+          </button>
+        </div>
+
         {/* Body */}
         <div className="px-6 py-4">
-          <p className="mb-3 text-sm text-slate-400">
-            Wklej JSON z danymi kampanii (np. wygenerowany przez Claude z Ahrefs).
-            Anchory zostaną wygenerowane automatycznie.
-          </p>
+          {tab === 'prompt' ? (
+            <>
+              <p className="mb-3 text-sm text-slate-400">
+                Skopiuj ten prompt i wklej do rozmowy z Claude. Zamień [WPISZ TEMAT] na swój temat.
+                Claude sprawdzi Ahrefs i zwróci gotowy JSON.
+              </p>
+              <div className="relative">
+                <pre className="h-64 overflow-auto rounded-xl border border-slate-700 bg-slate-950 p-4 text-sm leading-relaxed text-slate-300 whitespace-pre-wrap">
+                  {PROMPT_TEMPLATE}
+                </pre>
+                <button
+                  type="button"
+                  onClick={handleCopyPrompt}
+                  className={`absolute right-3 top-3 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                    copied
+                      ? 'bg-emerald-500/20 text-emerald-400'
+                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-300'
+                  }`}
+                >
+                  {copied ? 'Skopiowano!' : 'Kopiuj'}
+                </button>
+              </div>
+              <p className="mt-3 text-xs text-slate-500">
+                Po otrzymaniu JSONa od Claude, przejdź do zakładki &quot;2. Wklej JSON&quot;.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mb-3 text-sm text-slate-400">
+                Wklej JSON z danymi kampanii (odpowiedź Claude z Ahrefs).
+                Anchory zostaną wygenerowane automatycznie.
+              </p>
 
-          <textarea
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-              setError(null);
-            }}
-            placeholder='{"mainKeyword": "...", "blogs": [...]}'
-            className="h-64 w-full resize-none rounded-xl border border-slate-700 bg-slate-950 p-4 font-mono text-sm text-slate-200 placeholder:text-slate-600 focus:border-amber-500 focus:outline-none"
-            spellCheck={false}
-          />
+              <textarea
+                value={value}
+                onChange={(e) => {
+                  setValue(e.target.value);
+                  setError(null);
+                }}
+                placeholder='{"mainKeyword": "...", "blogs": [...]}'
+                className="h-64 w-full resize-none rounded-xl border border-slate-700 bg-slate-950 p-4 font-mono text-sm text-slate-200 placeholder:text-slate-600 focus:border-amber-500 focus:outline-none"
+                spellCheck={false}
+              />
 
-          {error && (
-            <div className="mt-2 rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
-              {error}
-            </div>
+              {error && (
+                <div className="mt-2 rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
+                  {error}
+                </div>
+              )}
+
+              {/* Format hint */}
+              <details className="mt-3">
+                <summary className="cursor-pointer text-xs text-slate-500 hover:text-slate-400">
+                  Format JSON — pokaż przykład
+                </summary>
+                <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-slate-950 p-3 text-xs text-slate-400">
+                  {EXAMPLE_JSON}
+                </pre>
+              </details>
+            </>
           )}
-
-          {/* Format hint */}
-          <details className="mt-3">
-            <summary className="cursor-pointer text-xs text-slate-500 hover:text-slate-400">
-              Format JSON — pokaż przykład
-            </summary>
-            <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-slate-950 p-3 text-xs text-slate-400">
-              {EXAMPLE_JSON}
-            </pre>
-          </details>
         </div>
 
         {/* Footer */}
@@ -122,14 +217,24 @@ export function PasteDataModal({
             >
               Anuluj
             </button>
-            <button
-              type="button"
-              onClick={handleImport}
-              disabled={!value.trim()}
-              className="rounded-lg bg-amber-500/20 px-4 py-2 text-sm font-medium text-amber-400 transition hover:bg-amber-500/30 disabled:opacity-40"
-            >
-              Importuj
-            </button>
+            {tab === 'prompt' ? (
+              <button
+                type="button"
+                onClick={() => setTab('paste')}
+                className="rounded-lg bg-sky-500/20 px-4 py-2 text-sm font-medium text-sky-400 transition hover:bg-sky-500/30"
+              >
+                Dalej →
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleImport}
+                disabled={!value.trim()}
+                className="rounded-lg bg-amber-500/20 px-4 py-2 text-sm font-medium text-amber-400 transition hover:bg-amber-500/30 disabled:opacity-40"
+              >
+                Importuj
+              </button>
+            )}
           </div>
         </div>
       </div>
