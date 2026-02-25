@@ -35,6 +35,7 @@ function StatusBadge({
             setEditing(false);
           }
         }}
+        onKeyUp={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
         placeholder="np. Priorytet!"
         className="w-28 rounded border border-amber-500/50 bg-slate-950 px-2 py-0.5 text-xs text-amber-300 placeholder:text-slate-600 focus:outline-none"
