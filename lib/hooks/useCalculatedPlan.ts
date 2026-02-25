@@ -5,7 +5,7 @@ import { buildPlan } from '../engine';
 
 export function useCalculatedPlan(campaign: CampaignInput): CalculatedPlan {
   return useMemo(() => {
-    const profile = LINK_PROFILES[campaign.linkProfile];
+    const profile = LINK_PROFILES[campaign.linkProfile] || LINK_PROFILES.balanced;
     return buildPlan(
       campaign.strongPbnCount,
       profile,

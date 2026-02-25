@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import type { CampaignInput, BlogArticle } from '../types';
-import { BLOG_LABELS } from '../constants';
+import type { CampaignInput, BlogArticle, LinkProfileKey } from '../types';
+import { BLOG_LABELS, LINK_PROFILES } from '../constants';
 import {
   generateStrongMoneyAnchors,
   generateWeakMoneyAnchors,
@@ -37,11 +37,11 @@ export function useCampaign() {
   const [campaign, setCampaign] = useState<CampaignInput>(createDefaultInput);
   const [hydrated, setHydrated] = useState(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount (merge with defaults for backwards compat)
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setCampaign(JSON.parse(saved));
+      if (saved) setCampaign((prev) => ({ ...prev, ...JSON.parse(saved) }));
     } catch { /* ignore */ }
     setHydrated(true);
   }, []);
@@ -147,6 +147,10 @@ export function useCampaign() {
       const companyUrl = raw.companyUrl || '';
 
       const blogMode = raw.blogMode === 'cluster' ? 'cluster' as const : 'traffic' as const;
+      const linkProfile: LinkProfileKey =
+        raw.linkProfile && raw.linkProfile in LINK_PROFILES
+          ? (raw.linkProfile as LinkProfileKey)
+          : 'balanced';
 
       const newCampaign: CampaignInput = {
         mainKeyword,
@@ -157,7 +161,7 @@ export function useCampaign() {
         companyUrl,
         blogMode,
         blogs,
-        linkProfile: raw.linkProfile || 'balanced',
+        linkProfile,
         strongPbnCount: raw.strongPbnCount || 30,
         // Auto-generate anchors from imported data
         strongMoneyAnchors: generateStrongMoneyAnchors(mainKeyword),
