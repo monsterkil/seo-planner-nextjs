@@ -43,10 +43,28 @@ const ANCHOR_JSON_FORMAT = `
     ]
   }`;
 
+function buildAntiCannibal(sitemapUrl: string, context: string): string {
+  const url = sitemapUrl.trim();
+  if (!url) return '';
+
+  let baseUrl = url;
+  try {
+    const parsed = new URL(url.startsWith('http') ? url : `https://${url}`);
+    baseUrl = parsed.origin;
+  } catch {
+    baseUrl = url.replace(/\/[^/]*$/, '');
+  }
+
+  return `\n\nWAŻNE: Artykuły blogowe NIE MOGĄ kanibalizować ŻADNYCH istniejących stron na stronie. Sprawdź WSZYSTKIE sitemapy:
+- Oferty: ${baseUrl}/ct_offer-sitemap.xml
+- Realizacje: ${baseUrl}/cpt-offer-sitemap.xml
+- Blogi: ${baseUrl}/post-sitemap.xml
+- Baza wiedzy: ${baseUrl}/baza-wiedzy-sitemap.xml
+Jeśli fraza (lub bardzo zbliżona) jest już pokryta przez istniejącą stronę ofertową, realizację, artykuł blogowy lub artykuł w bazie wiedzy — NIE proponuj jej jako nowy blog. ${context}\n`;
+}
+
 function buildPromptTraffic(sitemapUrl: string): string {
-  const antiCannibal = sitemapUrl.trim()
-    ? `\n\nWAŻNE: Artykuły blogowe NIE MOGĄ kanibalizować istniejących stron ofertowych. Sprawdź sitemap oferty: ${sitemapUrl.trim()} — jeśli fraza pasuje do już istniejącej strony ofertowej, NIE proponuj jej jako blog. Blogi mają być informacyjne/poradnikowe, nie ofertowe.\n`
-    : '';
+  const antiCannibal = buildAntiCannibal(sitemapUrl, 'Blogi mają być informacyjne/poradnikowe, nie duplikować istniejącego contentu.');
 
   return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 30 fraz informacyjnych z ruchem (KD 0-5), na które warto pisać blogi wspierające money page. Dla każdej frazy sprawdź SERP — wybieraj te, gdzie rankują poradniki/blogi, nie strony ofertowe. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
 
@@ -83,9 +101,7 @@ ${ANCHOR_JSON_FORMAT},
 }
 
 function buildPromptCluster(sitemapUrl: string): string {
-  const antiCannibal = sitemapUrl.trim()
-    ? `\n\nWAŻNE: Artykuły blogowe NIE MOGĄ kanibalizować istniejących stron ofertowych. Sprawdź sitemap oferty: ${sitemapUrl.trim()} — jeśli fraza pasuje do już istniejącej strony ofertowej, NIE proponuj jej jako blog. Blogi mają budować topical authority, nie konkurować z ofertą.\n`
-    : '';
+  const antiCannibal = buildAntiCannibal(sitemapUrl, 'Blogi mają budować topical authority, nie konkurować z istniejącym contentem.');
 
   return `Sprawdź w Ahrefs frazy związane z [WPISZ TEMAT]. Znajdź 30 fraz tematycznie powiązanych z money page, które budują topical authority wokół głównej frazy. To mogą być frazy o niskim lub zerowym ruchu — liczy się tematyczne wzmocnienie, nie traffic. Podaj tytuły artykułów klikalne i zoptymalizowane pod SEO.
 
