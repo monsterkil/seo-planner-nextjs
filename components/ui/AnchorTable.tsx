@@ -30,7 +30,7 @@ function groupAnchors(list: AnchorItem[]): GroupedRow[] {
 }
 
 const checkboxCls =
-  'h-3.5 w-3.5 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500/30 cursor-pointer';
+  'h-4.5 w-4.5 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500/30 cursor-pointer';
 
 export function AnchorTable({
   items,
@@ -80,11 +80,14 @@ export function AnchorTable({
                   className={`${tableTrHover} ${allUsed ? 'opacity-40' : ''}`}
                 >
                   {onToggle && (
-                    <td className={tableTd}>
+                    <td
+                      className={`${tableTd} cursor-pointer select-none`}
+                      onClick={() => onToggle(i.ids)}
+                    >
                       <input
                         type="checkbox"
                         checked={allUsed}
-                        onChange={() => onToggle(i.ids)}
+                        readOnly
                         className={checkboxCls}
                       />
                     </td>

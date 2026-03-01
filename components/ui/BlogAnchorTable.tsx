@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import type { AnchorItem, BlogArticle, AnchorType } from '@/lib/types';
 import { Pill } from './Pill';
 import { tableTh, tableTd, tableTrHover } from './table-styles';
@@ -23,7 +23,7 @@ function groupAnchors(list: AnchorItem[]): GroupedRow[] {
 }
 
 const checkboxCls =
-  'h-3.5 w-3.5 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500/30 cursor-pointer';
+  'h-4.5 w-4.5 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500/30 cursor-pointer';
 
 export function BlogAnchorTable({
   blogs,
@@ -40,9 +40,31 @@ export function BlogAnchorTable({
 }) {
   const used = new Set(usedAnchors ?? []);
   const hasCb = !!onToggle;
+  const [copied, setCopied] = useState(false);
+
+  const copyAllAnchors = () => {
+    const unique: string[] = [];
+    slices.forEach((items) => {
+      items.forEach((item) => {
+        if (!unique.includes(item.text)) unique.push(item.text);
+      });
+    });
+    navigator.clipboard.writeText(unique.join('|'));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/50">
+      <div className="flex items-center justify-end px-4 pt-3">
+        <button
+          type="button"
+          onClick={copyAllAnchors}
+          className="flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-slate-700 hover:text-slate-200"
+        >
+          {copied ? '✓ Skopiowano!' : '⧉ Kopiuj anchory (pipe)'}
+        </button>
+      </div>
       <table className="w-full min-w-[400px]">
         <thead>
           <tr className="bg-slate-800/50">
@@ -76,11 +98,14 @@ export function BlogAnchorTable({
                       className={`${tableTrHover} ${allUsed ? 'opacity-40' : ''}`}
                     >
                       {hasCb && (
-                        <td className={tableTd}>
+                        <td
+                          className={`${tableTd} cursor-pointer select-none`}
+                          onClick={() => onToggle!(i.ids)}
+                        >
                           <input
                             type="checkbox"
                             checked={allUsed}
-                            onChange={() => onToggle!(i.ids)}
+                            readOnly
                             className={checkboxCls}
                           />
                         </td>

@@ -27,7 +27,7 @@ export function InternalLinksSection({
       <Accordion
         count={`${doneCount}/${blogsWithLinks}`}
         countColor={doneCount === blogsWithLinks ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}
-        title="Blog → Oferta"
+        title="Artykuły blogowe linkujące do oferty"
       >
         <div className="space-y-4">
           {blogs.map((blog, i) => {
@@ -41,7 +41,7 @@ export function InternalLinksSection({
                     type="checkbox"
                     checked={done}
                     onChange={() => onTogglePublished(blog.id)}
-                    className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500/30"
+                    className="h-4.5 w-4.5 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500/30 cursor-pointer"
                   />
                   <span className={done ? 'line-through' : ''}>
                     Blog {blog.label}: {blog.title || blog.keyword}
