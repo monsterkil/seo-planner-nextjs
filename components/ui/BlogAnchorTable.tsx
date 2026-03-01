@@ -73,9 +73,26 @@ export function BlogAnchorTable({
 }) {
   const used = new Set(usedAnchors ?? []);
   const hasCb = !!onToggle;
+  const allIds = slices.flat().map((i) => i.id);
+  const allUsedGlobal = allIds.length > 0 && allIds.every((id) => used.has(id));
 
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/50">
+      {hasCb && (
+        <div className="flex items-center justify-end px-4 pt-3">
+          <button
+            type="button"
+            onClick={() => onToggle!(allIds)}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              allUsedGlobal
+                ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
+                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+            }`}
+          >
+            {allUsedGlobal ? '✓ Wszystkie zaznaczone' : '☐ Zaznacz wszystkie'}
+          </button>
+        </div>
+      )}
       <table className="w-full min-w-[400px]">
         <thead>
           <tr className="bg-slate-800/50">

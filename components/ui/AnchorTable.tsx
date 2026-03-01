@@ -73,9 +73,25 @@ export function AnchorTable({
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const allIds = items.map((i) => i.id);
+  const allUsedGlobal = allIds.every((id) => used.has(id));
+
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/50">
-      <div className="flex items-center justify-end px-4 pt-3">
+      <div className="flex items-center justify-end gap-2 px-4 pt-3">
+        {onToggle && (
+          <button
+            type="button"
+            onClick={() => onToggle(allIds)}
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              allUsedGlobal
+                ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
+                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+            }`}
+          >
+            {allUsedGlobal ? '✓ Wszystkie zaznaczone' : '☐ Zaznacz wszystkie'}
+          </button>
+        )}
         <button
           type="button"
           onClick={copyAnchors}
