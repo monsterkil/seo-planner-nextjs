@@ -83,13 +83,13 @@ function OgAvatar({ url, domain, keyword, fallback }: { url: string; domain: str
         src={img}
         alt=""
         onError={() => setErr(true)}
-        className="h-10 w-10 shrink-0 rounded-lg object-cover"
+        className="h-8 w-8 shrink-0 rounded-lg object-cover"
       />
     );
   }
 
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-lg font-bold text-amber-400">
+    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-sm font-bold text-amber-400">
       {fallback}
     </div>
   );
@@ -136,7 +136,7 @@ function StatusBadge({
             }
           }}
           placeholder="np. Priorytet!"
-          className="w-28 rounded border border-amber-500/50 bg-slate-950 px-2 py-0.5 text-xs text-amber-300 placeholder:text-slate-600 focus:outline-none"
+          className="w-24 rounded border border-amber-500/50 bg-slate-950 px-1.5 py-px text-[11px] text-amber-300 placeholder:text-slate-600 focus:outline-none"
         />
       </span>
     );
@@ -152,7 +152,7 @@ function StatusBadge({
           setEditing(true);
         }}
         onMouseDown={(e) => e.stopPropagation()}
-        className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-medium text-amber-400 transition hover:bg-amber-500/25"
+        className="rounded-full bg-amber-500/15 px-2 py-px text-[11px] font-medium text-amber-400 transition hover:bg-amber-500/25"
         title="Kliknij żeby edytować status"
       >
         {status}
@@ -169,7 +169,7 @@ function StatusBadge({
         setEditing(true);
       }}
       onMouseDown={(e) => e.stopPropagation()}
-      className="rounded-full border border-dashed border-slate-700 px-2.5 py-0.5 text-xs text-slate-600 opacity-0 transition group-hover:opacity-100 hover:border-slate-500 hover:text-slate-400"
+      className="rounded-full border border-dashed border-slate-700 px-2 py-px text-[11px] text-slate-600 opacity-0 transition group-hover:opacity-100 hover:border-slate-500 hover:text-slate-400"
       title="Dodaj status"
     >
       + status
@@ -242,7 +242,7 @@ export function CampaignSelector({
               onDragStart={() => handleDragStart(index)}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragEnd={handleDragEnd}
-              className={`group flex items-center justify-between rounded-xl border bg-slate-900/60 px-4 py-2.5 transition hover:border-slate-700 hover:bg-slate-800/60 ${
+              className={`group flex items-center justify-between rounded-xl border bg-slate-900/60 px-4 py-1.5 transition hover:border-slate-700 hover:bg-slate-800/60 ${
                 isDragOver
                   ? 'border-amber-500/50 bg-amber-500/5'
                   : 'border-slate-800'
@@ -266,7 +266,7 @@ export function CampaignSelector({
               <button
                 type="button"
                 onClick={() => onSelect(c.id)}
-                className="flex flex-1 items-center gap-4 text-left"
+                className="flex flex-1 items-center gap-3 text-left"
               >
                 <OgAvatar url={c.data.moneyPageUrl} domain={c.data.companyUrl} keyword={c.data.mainKeyword} fallback={keyword.charAt(0).toUpperCase()} />
                 <div className="min-w-0 flex-1">
