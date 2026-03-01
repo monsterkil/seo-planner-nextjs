@@ -1,7 +1,28 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import type { CampaignRecord } from '@/lib/types';
+import type { CampaignRecord, CampaignInput } from '@/lib/types';
+import { LINK_PROFILES } from '@/lib/constants';
+import { buildPlan } from '@/lib/engine';
+
+function campaignPbnStats(data: CampaignInput) {
+  const profile = LINK_PROFILES[data.linkProfile] || LINK_PROFILES.balanced;
+  const blogs = data.linkDistribution === 'equal'
+    ? data.blogs.map((b) => ({ ...b, volume: 0 }))
+    : data.blogs;
+  const plan = buildPlan(
+    data.strongPbnCount, profile, blogs,
+    data.strongMoneyAnchors, data.weakMoneyAnchors,
+    data.strongBlogAnchors, data.weakBlogAnchors,
+  );
+  const used = new Set(Array.isArray(data.usedAnchors) ? data.usedAnchors : []);
+  const strongOfferTotal = plan.strongMoneySlice.length;
+  const strongOfferUsed = plan.strongMoneySlice.filter((a) => used.has(a.id)).length;
+  const strongBlogAll = plan.strongBlogSlices.flat();
+  const strongBlogTotal = strongBlogAll.length;
+  const strongBlogUsed = strongBlogAll.filter((a) => used.has(a.id)).length;
+  return { strongOfferUsed, strongOfferTotal, strongBlogUsed, strongBlogTotal };
+}
 
 function StatusBadge({
   status,
@@ -194,6 +215,26 @@ export function CampaignSelector({
                       ? `${blogCount} blogów · vol. ${c.data.volume} · KD ${c.data.kd} · ${c.data.strongPbnCount} PBN`
                       : 'Pusta — kliknij żeby skonfigurować'}
                   </div>
+                  {hasData && (() => {
+                    const s = campaignPbnStats(c.data);
+                    return (
+                      <div className="mt-1 flex gap-3 text-[11px]">
+                        <span>
+                          <span className="text-slate-600">Mocne→Oferta </span>
+                          <span className={s.strongOfferUsed === s.strongOfferTotal ? 'text-emerald-400' : 'text-amber-400'}>
+                            {s.strongOfferUsed}/{s.strongOfferTotal}
+                          </span>
+                        </span>
+                        <span>
+                          <span className="text-slate-600">Mocne→Blogi </span>
+                          <span className={s.strongBlogUsed === s.strongBlogTotal ? 'text-emerald-400' : 'text-amber-400'}>
+                            {s.strongBlogUsed}/{s.strongBlogTotal}
+                          </span>
+                        </span>
+                      </div>
+                    );
+                  })()}
+
                 </div>
                 <span className="text-slate-600 transition group-hover:text-slate-400">
                   →
