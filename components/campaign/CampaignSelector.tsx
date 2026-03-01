@@ -236,12 +236,10 @@ export function CampaignSelector({
                       onSave={(v) => onUpdateStatus(c.id, v)}
                     />
                   </div>
-                  <div className="mt-0.5 text-xs text-slate-500">
-                    {hasData
-                      ? `${blogCount} blogów · vol. ${c.data.volume} · KD ${c.data.kd} · ${c.data.strongPbnCount} PBN`
-                      : 'Pusta — kliknij żeby skonfigurować'}
-                  </div>
-                  <PbnStatsLine data={c.data} hasData={hasData} />
+                  {hasData
+                    ? <PbnStatsLine data={c.data} hasData={hasData} />
+                    : <div className="mt-0.5 text-xs text-slate-500">Pusta — kliknij żeby skonfigurować</div>
+                  }
 
                 </div>
                 <span className="text-slate-600 transition group-hover:text-slate-400">
