@@ -52,20 +52,28 @@ function PbnStatsLine({ data, hasData }: { data: CampaignInput; hasData: boolean
 
 const ogCache: Record<string, string | null> = {};
 
-function OgAvatar({ url, fallback }: { url: string; fallback: string }) {
-  const [img, setImg] = useState<string | null>(ogCache[url] ?? null);
+function buildFullUrl(path: string, domain: string): string {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  const d = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  return `https://${d}${path.startsWith('/') ? '' : '/'}${path}`;
+}
+
+function OgAvatar({ url, domain, fallback }: { url: string; domain: string; fallback: string }) {
+  const fullUrl = buildFullUrl(url, domain);
+  const [img, setImg] = useState<string | null>(ogCache[fullUrl] ?? null);
   const [err, setErr] = useState(false);
 
   useEffect(() => {
-    if (!url || ogCache[url] !== undefined) return;
-    fetch(`/api/og-image?url=${encodeURIComponent(url)}`)
+    if (!fullUrl || ogCache[fullUrl] !== undefined) return;
+    fetch(`/api/og-image?url=${encodeURIComponent(fullUrl)}`)
       .then((r) => r.json())
       .then((d) => {
-        ogCache[url] = d.ogImage || null;
+        ogCache[fullUrl] = d.ogImage || null;
         if (d.ogImage) setImg(d.ogImage);
       })
-      .catch(() => { ogCache[url] = null; });
-  }, [url]);
+      .catch(() => { ogCache[fullUrl] = null; });
+  }, [fullUrl]);
 
   if (img && !err) {
     return (
@@ -258,7 +266,7 @@ export function CampaignSelector({
                 onClick={() => onSelect(c.id)}
                 className="flex flex-1 items-center gap-4 text-left"
               >
-                <OgAvatar url={c.data.moneyPageUrl} fallback={keyword.charAt(0).toUpperCase()} />
+                <OgAvatar url={c.data.moneyPageUrl} domain={c.data.companyUrl} fallback={keyword.charAt(0).toUpperCase()} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="truncate text-sm font-medium text-white">
