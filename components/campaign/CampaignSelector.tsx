@@ -83,13 +83,14 @@ function OgAvatar({ url, domain, keyword, fallback }: { url: string; domain: str
         src={img}
         alt=""
         onError={() => setErr(true)}
-        className="h-8 w-8 shrink-0 rounded-lg object-cover"
+        className="shrink-0 rounded-lg object-cover"
+        style={{ width: 111, height: 40 }}
       />
     );
   }
 
   return (
-    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-sm font-bold text-amber-400">
+    <div className="flex shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-sm font-bold text-amber-400" style={{ width: 111, height: 40 }}>
       {fallback}
     </div>
   );
