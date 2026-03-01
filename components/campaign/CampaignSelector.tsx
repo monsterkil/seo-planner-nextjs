@@ -220,13 +220,13 @@ export function CampaignSelector({
                     return (
                       <div className="mt-1 flex gap-3 text-[11px]">
                         <span>
-                          <span className="text-slate-600">Mocne→Oferta </span>
+                          <span className="text-slate-600">Mocne PBN → Oferta </span>
                           <span className={s.strongOfferUsed === s.strongOfferTotal ? 'text-emerald-400' : 'text-amber-400'}>
                             {s.strongOfferUsed}/{s.strongOfferTotal}
                           </span>
                         </span>
                         <span>
-                          <span className="text-slate-600">Mocne→Blogi </span>
+                          <span className="text-slate-600">Mocne PBN → Blogi </span>
                           <span className={s.strongBlogUsed === s.strongBlogTotal ? 'text-emerald-400' : 'text-amber-400'}>
                             {s.strongBlogUsed}/{s.strongBlogTotal}
                           </span>
