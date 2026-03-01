@@ -52,7 +52,23 @@ export function AnchorTable({
 
   const [copied, setCopied] = useState(false);
   const copyAnchors = () => {
-    navigator.clipboard.writeText(items.map((item) => item.text).join('|'));
+    const texts = items.map((item) => item.text);
+    // Spread duplicates apart: round-robin by unique anchor
+    const groups: Record<string, number> = {};
+    texts.forEach((t) => { groups[t] = (groups[t] || 0) + 1; });
+    const unique = Object.keys(groups);
+    const result: string[] = [];
+    let remaining = texts.length;
+    while (remaining > 0) {
+      for (const u of unique) {
+        if (groups[u] > 0) {
+          result.push(u);
+          groups[u]--;
+          remaining--;
+        }
+      }
+    }
+    navigator.clipboard.writeText(result.join('|'));
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
