@@ -27,7 +27,7 @@ export function InternalLinksSection({
       <Accordion
         count={`${doneCount}/${blogsWithLinks}`}
         countColor={doneCount === blogsWithLinks ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}
-        title="Blog → Oferta"
+        title="Artykuły"
       >
         <div className="space-y-4">
           {blogs.map((blog, i) => {
