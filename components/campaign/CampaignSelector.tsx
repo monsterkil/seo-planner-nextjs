@@ -197,7 +197,7 @@ export function CampaignSelector({
               onDragStart={() => handleDragStart(index)}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragEnd={handleDragEnd}
-              className={`group flex items-center justify-between rounded-xl border bg-slate-900/60 px-5 py-4 transition hover:border-slate-700 hover:bg-slate-800/60 ${
+              className={`group flex items-center justify-between rounded-xl border bg-slate-900/60 px-4 py-2.5 transition hover:border-slate-700 hover:bg-slate-800/60 ${
                 isDragOver
                   ? 'border-amber-500/50 bg-amber-500/5'
                   : 'border-slate-800'
