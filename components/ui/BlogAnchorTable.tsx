@@ -28,11 +28,7 @@ const checkboxCls =
 function CopyBlogAnchors({ items }: { items: AnchorItem[] }) {
   const [copied, setCopied] = useState(false);
   const copy = () => {
-    const unique: string[] = [];
-    items.forEach((item) => {
-      if (!unique.includes(item.text)) unique.push(item.text);
-    });
-    navigator.clipboard.writeText(unique.join('|'));
+    navigator.clipboard.writeText(items.map((item) => item.text).join('|'));
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };

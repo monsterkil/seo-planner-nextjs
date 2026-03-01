@@ -52,11 +52,7 @@ export function AnchorTable({
 
   const [copied, setCopied] = useState(false);
   const copyAnchors = () => {
-    const unique: string[] = [];
-    items.forEach((item) => {
-      if (!unique.includes(item.text)) unique.push(item.text);
-    });
-    navigator.clipboard.writeText(unique.join('|'));
+    navigator.clipboard.writeText(items.map((item) => item.text).join('|'));
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
