@@ -22,12 +22,12 @@ export function InternalLinksSection({
   return (
     <div>
       <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-white">
-        Linki z blogów do oferty
+        Artykuły blogowe linkujące do oferty
       </h3>
       <Accordion
         count={`${doneCount}/${blogsWithLinks}`}
         countColor={doneCount === blogsWithLinks ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}
-        title="Artykuły blogowe linkujące do oferty"
+        title="Blog → Oferta"
       >
         <div className="space-y-4">
           {blogs.map((blog, i) => {

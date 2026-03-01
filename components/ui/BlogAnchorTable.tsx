@@ -25,6 +25,28 @@ function groupAnchors(list: AnchorItem[]): GroupedRow[] {
 const checkboxCls =
   'h-4.5 w-4.5 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500/30 cursor-pointer';
 
+function CopyBlogAnchors({ items }: { items: AnchorItem[] }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    const unique: string[] = [];
+    items.forEach((item) => {
+      if (!unique.includes(item.text)) unique.push(item.text);
+    });
+    navigator.clipboard.writeText(unique.join('|'));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      className="ml-2 rounded bg-slate-700/60 px-2 py-0.5 text-[10px] font-medium text-slate-500 transition hover:bg-slate-700 hover:text-slate-300"
+    >
+      {copied ? '✓' : '⧉ kopiuj'}
+    </button>
+  );
+}
+
 export function BlogAnchorTable({
   blogs,
   slices,
@@ -40,31 +62,9 @@ export function BlogAnchorTable({
 }) {
   const used = new Set(usedAnchors ?? []);
   const hasCb = !!onToggle;
-  const [copied, setCopied] = useState(false);
-
-  const copyAllAnchors = () => {
-    const unique: string[] = [];
-    slices.forEach((items) => {
-      items.forEach((item) => {
-        if (!unique.includes(item.text)) unique.push(item.text);
-      });
-    });
-    navigator.clipboard.writeText(unique.join('|'));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
 
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/50">
-      <div className="flex items-center justify-end px-4 pt-3">
-        <button
-          type="button"
-          onClick={copyAllAnchors}
-          className="flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-slate-700 hover:text-slate-200"
-        >
-          {copied ? '✓ Skopiowano!' : '⧉ Kopiuj anchory (pipe)'}
-        </button>
-      </div>
       <table className="w-full min-w-[400px]">
         <thead>
           <tr className="bg-slate-800/50">
@@ -88,6 +88,7 @@ export function BlogAnchorTable({
                     className={`${tableTd} text-xs font-semibold text-slate-400`}
                   >
                     Blog {blog.label} · {blog.title || blog.keyword || '—'} · {items.length} linków
+                    <CopyBlogAnchors items={items} />
                   </td>
                 </tr>
                 {gr.map((i, gi) => {
