@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import type { AnchorItem, AnchorType } from '@/lib/types';
 import { Pill } from './Pill';
 import { tableTh, tableTd, tableTrHover } from './table-styles';
@@ -50,8 +50,28 @@ export function AnchorTable({
   const used = new Set(usedAnchors ?? []);
   let num = 1;
 
+  const [copied, setCopied] = useState(false);
+  const copyAnchors = () => {
+    const unique: string[] = [];
+    items.forEach((item) => {
+      if (!unique.includes(item.text)) unique.push(item.text);
+    });
+    navigator.clipboard.writeText(unique.join('|'));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/50">
+      <div className="flex items-center justify-end px-4 pt-3">
+        <button
+          type="button"
+          onClick={copyAnchors}
+          className="flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:bg-slate-700 hover:text-slate-200"
+        >
+          {copied ? '✓ Skopiowano!' : '⧉ Kopiuj anchory (pipe)'}
+        </button>
+      </div>
       <table className="w-full min-w-[400px]">
         <thead>
           <tr className="bg-slate-800/50">
