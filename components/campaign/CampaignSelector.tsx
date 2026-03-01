@@ -52,15 +52,17 @@ function PbnStatsLine({ data, hasData }: { data: CampaignInput; hasData: boolean
 
 const ogCache: Record<string, string | null> = {};
 
-function buildFullUrl(path: string, domain: string): string {
-  if (!path) return '';
-  if (path.startsWith('http')) return path;
-  const d = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-  return `https://${d}${path.startsWith('/') ? '' : '/'}${path}`;
+function resolvePageUrl(path: string, domain: string, keyword: string): string {
+  if (path && path.startsWith('http')) return path;
+  const d = (domain || 'folplex.pl').replace(/^https?:\/\//, '').replace(/\/$/, '');
+  if (path) return `https://${d}${path.startsWith('/') ? '' : '/'}${path}`;
+  // Fallback: guess from keyword slug
+  const slug = keyword.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  return slug ? `https://${d}/oferta/${slug}/` : '';
 }
 
-function OgAvatar({ url, domain, fallback }: { url: string; domain: string; fallback: string }) {
-  const fullUrl = buildFullUrl(url, domain);
+function OgAvatar({ url, domain, keyword, fallback }: { url: string; domain: string; keyword: string; fallback: string }) {
+  const fullUrl = resolvePageUrl(url, domain, keyword);
   const [img, setImg] = useState<string | null>(ogCache[fullUrl] ?? null);
   const [err, setErr] = useState(false);
 
@@ -266,7 +268,7 @@ export function CampaignSelector({
                 onClick={() => onSelect(c.id)}
                 className="flex flex-1 items-center gap-4 text-left"
               >
-                <OgAvatar url={c.data.moneyPageUrl} domain={c.data.companyUrl} fallback={keyword.charAt(0).toUpperCase()} />
+                <OgAvatar url={c.data.moneyPageUrl} domain={c.data.companyUrl} keyword={c.data.mainKeyword} fallback={keyword.charAt(0).toUpperCase()} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="truncate text-sm font-medium text-white">
