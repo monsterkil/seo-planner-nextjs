@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { CampaignRecord, CampaignInput } from '@/lib/types';
 import { LINK_PROFILES } from '@/lib/constants';
 import { buildPlan } from '@/lib/engine';
@@ -46,6 +46,41 @@ function PbnStatsLine({ data, hasData }: { data: CampaignInput; hasData: boolean
           {s.strongBlogUsed}/{s.strongBlogTotal}
         </span>
       </span>
+    </div>
+  );
+}
+
+const ogCache: Record<string, string | null> = {};
+
+function OgAvatar({ url, fallback }: { url: string; fallback: string }) {
+  const [img, setImg] = useState<string | null>(ogCache[url] ?? null);
+  const [err, setErr] = useState(false);
+
+  useEffect(() => {
+    if (!url || ogCache[url] !== undefined) return;
+    fetch(`/api/og-image?url=${encodeURIComponent(url)}`)
+      .then((r) => r.json())
+      .then((d) => {
+        ogCache[url] = d.ogImage || null;
+        if (d.ogImage) setImg(d.ogImage);
+      })
+      .catch(() => { ogCache[url] = null; });
+  }, [url]);
+
+  if (img && !err) {
+    return (
+      <img
+        src={img}
+        alt=""
+        onError={() => setErr(true)}
+        className="h-10 w-10 shrink-0 rounded-lg object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-lg font-bold text-amber-400">
+      {fallback}
     </div>
   );
 }
@@ -223,9 +258,7 @@ export function CampaignSelector({
                 onClick={() => onSelect(c.id)}
                 className="flex flex-1 items-center gap-4 text-left"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-lg font-bold text-amber-400">
-                  {keyword.charAt(0).toUpperCase()}
-                </div>
+                <OgAvatar url={c.data.moneyPageUrl} fallback={keyword.charAt(0).toUpperCase()} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="truncate text-sm font-medium text-white">
